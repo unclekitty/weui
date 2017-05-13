@@ -1,7 +1,7 @@
 <template>
   <div class="page-me">
     <div class="relative">
-      <div class="bg">
+      <div class="bg" style="background-image: url(static/bg.png);">
         <div class="wrapper">
           <router-link class="link" to="profile">
             <div class="center">
@@ -77,6 +77,9 @@ export default {
       // with hot-reload because the reloaded component
       // preserves its current state and we are modifying
       // its initial state.
+      bg: {
+        backgroundImage: `url(static/bg.png);`
+      },
       msg: 'Hello World!',
       bgUrl: 'static/bg.png'
     }
@@ -90,7 +93,6 @@ export default {
     position: relative;
   }
   .bg{
-    background-image: url(../../static/bg.png);
     height: 260px;
   }
   .wrapper {
