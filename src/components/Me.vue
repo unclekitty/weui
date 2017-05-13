@@ -90,7 +90,7 @@ export default {
     position: relative;
   }
   .bg{
-    background-image: url(../assets/bg.png);
+    background-image: url(../../static/bg.png);
     height: 260px;
   }
   .wrapper {
