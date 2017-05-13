@@ -1,11 +1,11 @@
 <template>
   <div class="page-me">
     <div class="relative">
-      <div class="bg">
+      <div class="bg" style="background-image: url(static/bg.png);">
         <div class="wrapper">
           <router-link class="link" to="profile">
             <div class="center">
-              <img src="/static/head.jpeg">
+              <img src="static/head.jpeg">
             </div>
           </router-link>
           <h3 class="name">
@@ -90,7 +90,6 @@ export default {
     position: relative;
   }
   .bg{
-    background-image: url(../assets/bg.png);
     height: 260px;
   }
   .wrapper {

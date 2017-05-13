@@ -37,7 +37,7 @@ export default {
   data () {
     return {
       title: '',
-      header: '/static/head.jpeg',
+      header: 'static/head.jpeg',
       defaultValue: '',
       now: '2015-11-12',
       sex: [{key: '1', value: '男'}, {key: '0', value: '女'}]

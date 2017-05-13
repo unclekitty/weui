@@ -6,7 +6,7 @@ import router from './router'
 import App from './App'
 import { sync } from 'vuex-router-sync'
 import Vuex from 'vuex'
-import { AlertPlugin, ConfirmPlugin } from 'vux'
+import { AlertPlugin, ConfirmPlugin, WechatPlugin } from 'vux'
 import Navigation from 'vue-navigation'
 
 Vue.use(Vuex)
@@ -33,6 +33,7 @@ Vue.use(Navigation, {router, store})
 Vue.use(AlertPlugin)
 Vue.use(ConfirmPlugin)
 Vue.use(require('vue-wechat-title'))
+Vue.use(WechatPlugin)
 
 FastClick.attach(document.body)
 
