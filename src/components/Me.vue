@@ -5,7 +5,7 @@
         <div class="wrapper">
           <router-link class="link" to="profile">
             <div class="center">
-              <img src="/static/head.jpeg">
+              <img src="static/head.jpeg">
             </div>
           </router-link>
           <h3 class="name">
@@ -78,7 +78,7 @@ export default {
       // preserves its current state and we are modifying
       // its initial state.
       msg: 'Hello World!',
-      bgUrl: '/static/bg.png'
+      bgUrl: 'static/bg.png'
     }
   }
 }
