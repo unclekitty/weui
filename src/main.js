@@ -8,6 +8,7 @@ import { sync } from 'vuex-router-sync'
 import Vuex from 'vuex'
 import { AlertPlugin, ConfirmPlugin, WechatPlugin } from 'vux'
 import Navigation from 'vue-navigation'
+import VueResource from 'vue-resource'
 
 Vue.use(Vuex)
 // store
@@ -34,10 +35,13 @@ Vue.use(AlertPlugin)
 Vue.use(ConfirmPlugin)
 Vue.use(require('vue-wechat-title'))
 Vue.use(WechatPlugin)
+Vue.use(VueResource)
 
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false
+Vue.http.options.root = 'http://duo.authorc.com/duoli'
+Vue.http.headers.common['Authorization'] = 'Basic YXBpOnBhc3N3b3Jk'
 
 sync(store, router)
 

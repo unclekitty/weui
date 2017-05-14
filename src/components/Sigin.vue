@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { Box, Group, Cell, Icon, XInput, XButton } from 'vux'
 
 export default {
@@ -35,6 +36,21 @@ export default {
     Icon,
     XInput,
     XButton
+  },
+  methods: {
+    sigin () {
+      const self = this
+      const $http = this.$http
+      const router = self.router
+      let fields = [
+        'mobile',
+        'password'
+      ]
+      let data = _.merge({}, _.pick(self.data, fields))
+      $http.post('/login', data, res => {
+        router.push('me')
+      })
+    }
   },
   data () {
     return {

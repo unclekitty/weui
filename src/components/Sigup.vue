@@ -46,9 +46,10 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { Box, Group, Cell, Icon, XInput, XButton, Countdown } from 'vux'
-
 const COUNT_TIME = 60
+const USERTYPE = 1
 
 export default {
   components: {
@@ -73,6 +74,36 @@ export default {
       let self = this
       self.start = false
       self.time = COUNT_TIME
+    },
+    sigin () {
+      const self = this
+      const $http = this.$http
+      const router = self.router
+      let fields = [
+        'mobile',
+        'password'
+      ]
+      let data = _.merge({}, _.pick(self.data, fields))
+      $http.post('/login', data, res => {
+        router.push('me')
+      })
+    },
+    getAuthCode () {
+      const self = this
+      const $http = this.$http
+      const router = self.router
+      let fields = [
+        'mobile',
+        'password'
+      ]
+      let data = _.merge({
+        userType: USERTYPE,
+        secret: '1i9PivUeseAuThorL17'
+        // sendType: sendType
+      }, _.pick(self.data, fields))
+      $http.post('/login', data, res => {
+        router.push('me')
+      })
     }
   },
   data () {
