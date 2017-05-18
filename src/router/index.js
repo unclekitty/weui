@@ -20,8 +20,10 @@ import IntegalExchangeRecord from '@/components/IntegalExchangeRecord'
 import IntegalExchangeDetail from '@/components/IntegalExchangeDetail'
 import Message from '@/components/Message'
 import Ticket from '@/components/Ticket'
-import Address from '@/components/address'
+import TicketList from '@/components/TicketList'
+import Address from '@/components/Address'
 import AddressEdit from '@/components/AddressEdit'
+import Settings from '@/components/Settings'
 
 const storage = window.localStorage
 
@@ -36,7 +38,7 @@ export default new Router({
         if (token) {
           return '/me'
         } else {
-          return '/me'
+          return '/sigin'
         }
       },
       name: 'Tabs',
@@ -176,6 +178,14 @@ export default new Router({
       component: Ticket
     },
     {
+      path: '/ticketlist',
+      name: 'TicketList',
+      meta: {
+        title: '我的小票'
+      },
+      component: TicketList
+    },
+    {
       path: '/address',
       name: 'Address',
       meta: {
@@ -190,6 +200,14 @@ export default new Router({
         title: '编辑地址'
       },
       component: AddressEdit
+    },
+    {
+      path: '/settings',
+      name: 'Settings',
+      meta: {
+        title: '设置'
+      },
+      component: Settings
     }
   ]
 })

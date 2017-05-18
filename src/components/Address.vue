@@ -1,19 +1,19 @@
 <template>
   <div class="page-address">
-    <card class="card" v-for="item in list" :key="item.id">
+    <card class="card" v-for="item in list" :key="item.id" @click.native="select(item)">
         <div slot="header" class="header">
             <div class="row">
-                <span class="title">张全蛋</span>
+                <span class="title">{{item.name}} {{item.mobile}}</span>
             </div>
             <div class="row">
-                <span class="title">上海市浦东新区东方路889号</span>
+                <span class="title">{{item.detailed}}</span>
             </div>
         </div>
         <div slot="footer" class="footer">
             <div class="weui-cells weui-cells_checkbox">
                 <label class="weui-cell weui-check__label">
                     <div class="weui-cell__hd">
-                        <input type="checkbox" class="weui-check" name="checkbox1"/>
+                        <input type="checkbox" class="weui-check" name="isdefault" v-model="item.isDefault"/>
                         <i class="weui-icon-checked"></i>
                     </div>
                     <div class="weui-cell__bd">
@@ -23,10 +23,10 @@
             </div>
             <!--<x-number :value="0" :min="0"></x-number>-->
             <div class="align-right">
-                <x-button mini type="warn">
+                <x-button mini type="warn" @click.native.stop="dele(item.id)">
                     <x-icon type="ios-trash" size="18"></x-icon>删除
                 </x-button>
-                <x-button mini type="primary" @click.native="editor(0)">
+                <x-button mini type="primary" @click.native.stop="editor(item.id)">
                     <x-icon type="ios-compose" size="18"></x-icon>编辑
                 </x-button>
             </div>
@@ -43,6 +43,15 @@
 import { XButton, Checklist, Box, Card, Group, Cell, Icon } from 'vux'
 
 export default {
+  created () {
+    let self = this
+    self.load()
+  },
+  mounted () {
+    let self = this
+    let $route = this.$route
+    self.isSelect = $route.params['select']
+  },
   components: {
     XButton,
     Checklist,
@@ -53,6 +62,18 @@ export default {
     Icon
   },
   methods: {
+    load () {
+      let self = this
+      let $http = this.$http
+      $http.post(`a/api/address/list`, {}).then(res => {
+        let response = res.body
+        let list = response.results.list
+        for (let i = 0; i < list.length; i++) {
+          list[i].isDefault = list[i].isDefault === '1'
+        }
+        self.list = list
+      })
+    },
     editor (id) {
       let $router = this.$router
       if (id) {
@@ -60,23 +81,55 @@ export default {
       } else {
         $router.push('address/0')
       }
+    },
+    dele (id) {
+      let self = this
+      let $http = this.$http
+      self.confirm('确定要删除？', flag => {
+        if (flag) {
+          $http.delete(`a/api/address/${id}`, {id: id}).then(res => {
+            let response = res.body
+            self.alert(response.status.info)
+            self.load()
+          })
+        }
+      })
+    },
+    select (item) {
+      let self = this
+      let $router = this.$router
+      let $store = this.$store
+      $store.commit('selected', {data: item})
+      if (self.isSelect) {
+        $router.go(-1)
+      }
+    },
+    confirm (message, callback) {
+      this.$vux.confirm.show({
+        // 组件除show外的属性
+        title: '确认',
+        content: message,
+        onCancel () {
+          callback(false)
+        },
+        onConfirm () {
+          callback(true)
+        }
+      })
+    },
+    alert (message) {
+      const alert = this.$vux.alert
+      alert.show({
+        title: '提示',
+        content: message
+      })
     }
   },
   data () {
     return {
       title: '',
-      list: [{
-        id: 1,
-        date: '2017-5-12 8:00',
-        status: '小票审核通过',
-        content: '小票兑换成功+20积分，目前积分520分'
-      },
-      {
-        id: 2,
-        date: '2017-5-12 8:00',
-        status: '小票审核通过',
-        content: '小票兑换成功+20积分，目前积分520分'
-      }]
+      list: [],
+      isSelect: false
     }
   }
 }

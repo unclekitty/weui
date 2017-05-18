@@ -3,13 +3,17 @@
     <div class="relative">
       <div class="bg" style="background-image: url(static/bg.png);">
         <div class="wrapper">
-          <router-link class="link" to="profile">
-            <div class="center">
+          <div class="face">
+            <a class="link left">&nbsp;</a>
+            <router-link class="link center" to="profile">
               <img src="static/head.jpeg">
-            </div>
-          </router-link>
+            </router-link>
+            <router-link class="link right" to="settings">
+              <i class="glyph-icon flaticon-settings-5"></i>
+            </router-link>
+          </div>
           <h3 class="name">
-            <router-link class="link" to="profile">张全蛋</router-link>
+            <router-link class="link" to="profile">{{userInfo.name}}</router-link>
           </h3>
           <div class="grid-wrapper">
             <grid slot="content" :rows="2">
@@ -29,15 +33,15 @@
       <div class="panel">
         <grid slot="content" :rows="3">
           <grid-item class="grid-item" link="ticket">
-            <x-icon type="ios-camera" size="40"></x-icon>
+            <i class="glyph-icon flaticon-photo-camera"></i>
             <span class="label">拍摄小票</span>
           </grid-item>
-          <grid-item class="grid-item">
-            <x-icon type="ios-calendar" size="40"></x-icon>
+          <grid-item class="grid-item" :class="{'no-sign': !isSign}" @click.native="sign()">
+            <i class="glyph-icon flaticon-calendar-7"></i>
             <span class="label">签到</span>
           </grid-item>
           <grid-item class="grid-item" link="integralRule">
-            <x-icon type="ios-list" size="40"></x-icon>
+            <i class="glyph-icon flaticon-notepad"></i>
             <span class="label">积分规则</span>
           </grid-item>
         </grid>
@@ -45,13 +49,17 @@
     </div>
     <!--integral-->
     <div class="integral">
-      <grid slot="content" :rows="2">
+      <grid slot="content" :rows="3">
         <grid-item class="grid-item" link="integalExchangeRecord">
-          <x-icon type="ios-camera" size="45"></x-icon>
+          <i class="glyph-icon flaticon-calendar-2 blue"></i>
           <span class="label">积分兑换纪录</span>
         </grid-item>
+        <grid-item class="grid-item" link="ticketlist">
+          <i class="glyph-icon flaticon-bookmark primary"></i>
+          <span class="label">小票拍摄纪录</span>
+        </grid-item>
         <grid-item class="grid-item" link="integalExchange">
-          <x-icon type="ios-camera" size="45"></x-icon>
+          <i class="glyph-icon flaticon-gift warn"></i>
           <span class="label">积分兑换</span>
         </grid-item>
       </grid>
@@ -61,15 +69,52 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { Blur, Card, Group, Grid, GridItem } from 'vux'
+const storage = window.localStorage
 
 export default {
+  created () {
+    let self = this
+    let $http = this.$http
+    let userInfo = JSON.parse(storage.getItem('userInfo'))
+    $http.post(`a/api/user/${userInfo.id}`, {}).then(res => {
+      let response = res.body
+      let info = response.results
+      let fields = [
+        'nickName',
+        'name',
+        'sex',
+        'birthday',
+        'mobile',
+        'email'
+      ]
+      _.merge(self.userInfo, info)
+      _.merge(self.userInfo, _.pick(info.dlUserInfo, fields))
+    })
+  },
   components: {
     Blur,
     Group,
     Card,
     Grid,
     GridItem
+  },
+  methods: {
+    sign () {
+      let self = this
+      let $http = this.$http
+      $http.post(`a/api/onsign`, {}).then(res => {
+        self.isSign = true
+      })
+    },
+    alert (message) {
+      const alert = this.$vux.alert
+      alert.show({
+        title: '提示',
+        content: message
+      })
+    }
   },
   data () {
     return {
@@ -81,7 +126,16 @@ export default {
         backgroundImage: `url(static/bg.png);`
       },
       msg: 'Hello World!',
-      bgUrl: 'static/bg.png'
+      bgUrl: 'static/bg.png',
+      userInfo: {
+        nickName: '',
+        name: '',
+        sex: '',
+        birthday: '',
+        mobile: '',
+        email: ''
+      },
+      isSign: false
     }
   }
 }
@@ -102,16 +156,33 @@ export default {
     justify-content: center;
     padding: 15px;
 
-    .center {
+    .face {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
       color: #fff;
       font-size: 18px;
       margin-bottom: 10px;
-      img {
-        display: inherit;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        border: 2px solid rgba(236, 236, 236, 0.25);
+
+      .link{
+        flex: 1;
+        display: block;
+        &.center {
+          text-align: center;
+        }
+        &.right {
+          text-align: right;
+          font-size: 28px;
+          color: #fff;
+        }
+        img {
+          width: 60px;
+          height: 60px;
+          vertical-align: middle;
+          border-radius: 50%;
+          border: 2px solid rgba(236, 236, 236, 0.25);
+        }
       }
     }
 
@@ -142,6 +213,12 @@ export default {
           &:hover{
             background:none;
           }
+          .title{
+            color: #fff;
+          }
+          span {
+            color: #ff9800;
+          }
         }
       }
       width: 100%;
@@ -152,7 +229,6 @@ export default {
     padding: 15px 12px;
     text-align:center;
     font-size: 12px;
-    color: #333;
     .title{
       display: block;
       margin-bottom: 5px;
@@ -161,10 +237,9 @@ export default {
     }
     span {
       font-size: 1.3em;
-      color: #ff9800;
     }
   }
-  
+
   .panel, .integral{
     background: #fff;
 
@@ -182,16 +257,25 @@ export default {
         }
         .grid-item{
           padding: 15px 12px;
+          color: #666;
 
           .label{
             display: block;
           }
-          .vux-x-icon {
-              fill: #666;
+          .glyph-icon {
+              font-size: 32px;
           }
           span {
             font-size: 1.2em;
-            color: #999;
+          }
+          &.no-sign{
+            background: #ff0000;
+            span {
+              color: #fff;
+            }
+            .glyph-icon {
+              color: #fff;
+            }
           }
           &:after{
             display: none;
@@ -209,15 +293,14 @@ export default {
       margin-top: 90px;
 
       .grid-item {
+        color: #666;
         padding: 20px 12px;
+
         .label{
           display: block;
         }
-        .vux-x-icon {
-            fill: #666;
-        }
-        span {
-          color: #999;
+        .glyph-icon {
+          font-size: 40px;
         }
       }
     }

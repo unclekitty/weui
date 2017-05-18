@@ -3,7 +3,7 @@
 
     <box gap="15px 15px">
       <group class="form-group">
-        <x-input title="手机号码" name="mobile" placeholder="请输入手机号码" keyboard="number" is-type="china-mobile"></x-input>
+        <x-input title="手机号码" v-model="mobile" placeholder="请输入手机号码" keyboard="number" is-type="china-mobile"></x-input>
       </group>
       <group class="form-group">
         <x-input title="密码" type="password" placeholder="不小于6位" v-model="password" :min="6" :max="6"></x-input>
@@ -17,7 +17,7 @@
         </span>
       </div>
       <div class="form-group">
-        <x-button type="warn">登录</x-button>
+        <x-button type="warn" @click.native="sigin()">登录</x-button>
       </div>
     </box>
 
@@ -25,7 +25,10 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { Box, Group, Cell, Icon, XInput, XButton } from 'vux'
+const USERTYPE = 1
+const storage = window.localStorage
 
 export default {
   components: {
@@ -36,8 +39,38 @@ export default {
     XInput,
     XButton
   },
+  methods: {
+    sigin () {
+      const self = this
+      const $http = this.$http
+      const router = this.$router
+      const alert = this.$vux.alert
+      let fields = [
+        'mobile',
+        'password'
+      ]
+      let data = _.merge({
+        userType: USERTYPE
+      }, _.pick(self.$data, fields))
+      $http.post('a/api/login', data).then(res => {
+        let response = res.body
+        let userInfo = response.results
+        if (response.status.index === '10000') {
+          storage.setItem('token', response.token)
+          storage.setItem('userInfo', JSON.stringify(userInfo))
+          router.push('me')
+        } else {
+          alert.show({
+            title: '提示',
+            content: response.status.info
+          })
+        }
+      })
+    }
+  },
   data () {
     return {
+      mobile: '',
       password: ''
     }
   }

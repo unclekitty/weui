@@ -16,14 +16,14 @@
 
     <div class="swiper">
       <tab :line-width="1" custom-bar-width="60px" v-model="index">
-          <tab-item active-class="active" v-for="(item, index) in list2" :key="index">{{item}}</tab-item>
+          <tab-item active-class="active" v-for="(item, index) in list" :key="index">{{item}}</tab-item>
       </tab>
-      <swiper v-model="index" :height="'600px'" :show-dots="false">
-        <swiper-item v-for="(item, index) in list2" :key="index">
+      <swiper v-model="index" :height="height()" :show-dots="false">
+        <swiper-item v-for="(item, index) in list" :key="index">
           <div class="tab-swiper vux-center">
             <!--LIST-->
             <div class="list">
-              <div class="item" v-for="(item, index) in list2" :key="index">
+              <div class="item" v-for="(item, index) in list" :key="index">
                 <span class="title">2017-5-5 8:00</span>
                 <span class="content">小票兑换</span>
                 <span class="label warn">-200</span>
@@ -38,8 +38,6 @@
 
 <script>
 import { Group, Grid, GridItem, Cell, Icon, Tab, TabItem, Swiper, SwiperItem } from 'vux'
-const list = () => ['全部', '实体店积分', '签到积分', '积分兑换']
-
 export default {
   components: {
     Group,
@@ -52,16 +50,16 @@ export default {
     Swiper,
     SwiperItem
   },
-  computed: {
-    height: () => {
-      return `${list.length * 55}px`
+  methods: {
+    height () {
+      return `${this.list.length * 55}px`
     }
   },
   data () {
     return {
       title: '',
       index: 0,
-      list2: list()
+      list: ['全部', '实体店积分', '签到积分', '积分兑换', '积分兑换']
     }
   }
 }

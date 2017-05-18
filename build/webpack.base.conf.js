@@ -1,7 +1,7 @@
 var path = require('path')
 var utils = require('./utils')
 
-var projectRoot = path.resolve(__dirname, '../')
+// var projectRoot = path.resolve(__dirname, '../')
 const vuxLoader = require('vux-loader')
 
 var config = require('../config')
@@ -62,7 +62,7 @@ let webpackConfig = {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         loader: 'url-loader',
         options: {
-          limit: 10000,
+          // limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       },

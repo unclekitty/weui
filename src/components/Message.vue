@@ -16,6 +16,10 @@
 import { Box, Card, Group, Cell, Icon } from 'vux'
 
 export default {
+  created () {
+    let self = this
+    self.load()
+  },
   components: {
     Box,
     Card,
@@ -23,33 +27,21 @@ export default {
     Cell,
     Icon
   },
+  methods: {
+    load () {
+      let self = this
+      let $http = this.$http
+      $http.post(`a/api/msgDetail/list`, {}).then(res => {
+        let response = res.body
+        let list = response.results.list
+        self.list = list
+      })
+    }
+  },
   data () {
     return {
       title: '',
-      list: [{
-        id: 1,
-        date: '2017-5-12 8:00',
-        status: '小票审核通过',
-        content: '小票兑换成功+20积分，目前积分520分'
-      },
-      {
-        id: 2,
-        date: '2017-5-12 8:00',
-        status: '小票审核通过',
-        content: '小票兑换成功+20积分，目前积分520分'
-      },
-      {
-        id: 3,
-        date: '2017-5-12 8:00',
-        status: '小票审核通过',
-        content: '小票兑换成功+20积分，目前积分520分'
-      },
-      {
-        id: 4,
-        date: '2017-5-12 8:00',
-        status: '小票审核通过',
-        content: '小票兑换成功+20积分，目前积分520分'
-      }]
+      list: []
     }
   }
 }

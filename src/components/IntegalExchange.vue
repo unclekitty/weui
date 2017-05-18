@@ -1,14 +1,14 @@
 <template>
   <div class="page-ingegal-exchange">
     <group class="address">
-      <cell title="选择收获地址" disabled is-link></cell>
+      <cell title="选择收获地址" is-link @click.native="select()"></cell>
       <div class="address-info">
         <div class="row">
-          <span>收件人：张全蛋</span>
-          <span>18688990088</span>
+          <span>收件人：{{address.name}}</span>
+          <span>{{address.mobile}}</span>
         </div>
         <div class="row">
-          <span>收件地址：上海市浦东新区东方路880号</span>
+          <span>收件地址：{{address.detailed}}</span>
         </div>
       </div>
     </group>
@@ -25,13 +25,12 @@
           <div class="title">皇帝碗</div>
           <p class="sub">
             <span>积分300</span>
-            <span>x1</span>
+            <x-number class="number" :value="0" :min="0"></x-number>
           </p>
         </div>
       </div>
       <div slot="footer" class="footer">
         <div></div>
-        <!--<x-number :value="0" :min="0"></x-number>-->
         <div class="align-right">
           <p>共计1件商品 合计：<span class="warn">300积分</span></p>
           <p>持有积分：<span class="primary">3200</span></p>
@@ -46,9 +45,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { XNumber, XButton, Card, Group, Cell, Icon } from 'vux'
 
 export default {
+  beforeDestroy () {
+    let $store = this.$store
+    $store.commit('selected', {data: {}})
+  },
   components: {
     XNumber,
     XButton,
@@ -56,6 +60,19 @@ export default {
     Group,
     Cell,
     Icon
+  },
+  methods: {
+    select () {
+      let self = this
+      let $router = this.$router
+      self
+      $router.push({name: 'Address', params: { select: true }})
+    }
+  },
+  computed: {
+    ...mapState({
+      address: state => state.address.data
+    })
   },
   data () {
     return {
@@ -161,6 +178,15 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        .number{
+          padding: 0;
+          &:before{
+            display: none;
+          }
+          .vux-number-selector-plus{
+            margin: 0;
+          }
+        }
       }
     }
   }
