@@ -1,7 +1,7 @@
 <template>
   <div class="page-ticket-list">
     <scroller lock-x scrollbar-y>
-      <box gap="15px 15px">
+      <div class="wrapper">
         <card class="card" v-for="item in list" :key="item.id">
           <div slot="header" class="header">
             <span class="title">{{item.createDate}}</span>
@@ -19,13 +19,13 @@
             </div>
           </div>
         </card>
-      </box>
+      </div>
     </scroller>
   </div>
 </template>
 
 <script>
-import { Scroller, Box, Card, Group, Cell, Icon } from 'vux'
+import { Card, Group, Cell, Icon } from 'vux'
 import moment from 'moment'
 
 export default {
@@ -34,8 +34,6 @@ export default {
     self.load()
   },
   components: {
-    Scroller,
-    Box,
     Card,
     Group,
     Cell,
@@ -66,10 +64,14 @@ export default {
 
 <style lang="scss">
 .page-ticket-list{
+  
+  .wrapper {
+    overflow: hidden;
+  }
 
   .card{
-    border-radius: 6px;
     box-shadow: 2px 2px 1px rgba(204, 204, 204, 0.51);
+    margin-top: 20px;
 
     &:before,&:after{
       display: none;

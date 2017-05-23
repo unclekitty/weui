@@ -1,7 +1,6 @@
 <template>
   <div class="page-profile">
     <group>
-      <cell title="地址管理" is-link link="address"></cell>
       <cell title="修改密码" is-link link="resetpwd"></cell>
     </group>
 

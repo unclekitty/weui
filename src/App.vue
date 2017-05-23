@@ -32,6 +32,10 @@ export default {
   html,body {
     height: 100%;
     background-color: #fbf9fe;
+    color: #333;
+  }
+  a {
+    color: #333;
   }
   .primary{
     color: #1AAD19;
@@ -39,11 +43,18 @@ export default {
   .warn{
     color: #E64340;
   }
+  .danger{
+    color: #ff9800;
+  }
   .blue{
     color: #0e08ee;
   }
+  .weui-btn_danger {
+    background: #ff9800;
+  }
   #app, [class^=page-]{
     height: 100%;
+    position: relative;
   }
   .glyph-icon {
     &:before{
@@ -51,6 +62,7 @@ export default {
       margin: 0;
     }
   }
+
   .router-view {
     width: 100%;
   }
@@ -83,6 +95,7 @@ export default {
     -webkit-transform: translate3d(-100%,0,0);
     transform: translate3d(-100%,0,0)
   }
+
   .form{
       .weui-cells{
           margin: 0;
@@ -93,4 +106,5 @@ export default {
           }
       }
   }
+  
 </style>

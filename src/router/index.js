@@ -7,20 +7,33 @@ import ForgotPwd from '@/components/ForgotPwd'
 import ResetPwd from '@/components/ResetPwd'
 // tabs
 import Tabs from '@/components/Tabs'
-// import Home from '@/components/Home'
-// import Contact from '@/components/Contact'
-// import Explore from '@/components/Explore'
+import Home from '@/components/Home'
+import Category from '@/components/Category'
+import Explore from '@/components/Explore'
+import Cart from '@/components/Cart'
 import Me from '@/components/Me'
-// content
+// shop
+import Goods from '@/components/Goods'
+import GoodsDetail from '@/components/GoodsDetail'
+import Balance from '@/components/Balance'
+import Payment from '@/components/Payment'
+import Order from '@/components/Order'
+import OrderDetail from '@/components/OrderDetail'
+// user
 import Profile from '@/components/Profile'
 import Integral from '@/components/Integral'
 import IntegralRule from '@/components/IntegralRule'
+import IntegralUseDescription from '@/components/IntegralUseDescription'
+// 一期
 import IntegalExchange from '@/components/IntegalExchange'
 import IntegalExchangeRecord from '@/components/IntegalExchangeRecord'
 import IntegalExchangeDetail from '@/components/IntegalExchangeDetail'
+// ！一期
 import Message from '@/components/Message'
 import Ticket from '@/components/Ticket'
 import TicketList from '@/components/TicketList'
+import ECTicket from '@/components/ECTicket'
+import ECTicketList from '@/components/ECTicketList'
 import Address from '@/components/Address'
 import AddressEdit from '@/components/AddressEdit'
 import Settings from '@/components/Settings'
@@ -34,12 +47,14 @@ export default new Router({
     {
       path: '/',
       redirect: () => {
-        let token = storage.getItem('token')
-        if (token) {
-          return '/me'
-        } else {
-          return '/sigin'
-        }
+        storage.getItem('token')
+        return '/home'
+        // let token = storage.getItem('token')
+        // if (token) {
+        //   return '/me'
+        // } else {
+        //   return '/sigin'
+        // }
       },
       name: 'Tabs',
       meta: {
@@ -47,30 +62,38 @@ export default new Router({
       },
       component: Tabs,
       children: [
-        // {
-        //   path: 'home',
-        //   name: 'Home',
-        //   meta: {
-        //     title: '首页'
-        //   },
-        //   component: Home
-        // },
-        // {
-        //   path: 'contact',
-        //   name: 'Contact',
-        //   meta: {
-        //     title: '联系人'
-        //   },
-        //   component: Contact
-        // },
-        // {
-        //   path: 'explore',
-        //   name: 'Explore',
-        //   meta: {
-        //     title: '发现'
-        //   },
-        //   component: Explore
-        // },
+        {
+          path: 'home',
+          name: 'Home',
+          meta: {
+            title: '首页'
+          },
+          component: Home
+        },
+        {
+          path: 'category',
+          name: 'Category',
+          meta: {
+            title: '分类'
+          },
+          component: Category
+        },
+        {
+          path: 'explore',
+          name: 'Explore',
+          meta: {
+            title: '发现'
+          },
+          component: Explore
+        },
+        {
+          path: 'cart',
+          name: 'Cart',
+          meta: {
+            title: '购物车'
+          },
+          component: Cart
+        },
         {
           path: 'me',
           name: 'Me',
@@ -138,6 +161,15 @@ export default new Router({
       component: IntegralRule
     },
     {
+      path: '/integralUseDescription',
+      name: 'IntegralUseDescription',
+      meta: {
+        title: '积分规则'
+      },
+      component: IntegralUseDescription
+    },
+    // /****------
+    {
       path: '/integalExchange',
       name: 'IntegalExchange',
       meta: {
@@ -149,7 +181,7 @@ export default new Router({
       path: '/integalExchangeRecord',
       name: 'IntegalExchangeRecord',
       meta: {
-        title: '兑换纪录'
+        title: '兑换记录'
       },
       component: IntegalExchangeRecord
     },
@@ -161,6 +193,7 @@ export default new Router({
       },
       component: IntegalExchangeDetail
     },
+    // --------****/
     {
       path: '/message',
       name: 'Message',
@@ -186,6 +219,22 @@ export default new Router({
       component: TicketList
     },
     {
+      path: '/ecticket',
+      name: 'ECTicket',
+      meta: {
+        title: '电商积分'
+      },
+      component: ECTicket
+    },
+    {
+      path: '/ecticketlist',
+      name: 'ECTicketList',
+      meta: {
+        title: '电商积分记录'
+      },
+      component: ECTicketList
+    },
+    {
       path: '/address',
       name: 'Address',
       meta: {
@@ -208,6 +257,54 @@ export default new Router({
         title: '设置'
       },
       component: Settings
+    },
+    {
+      path: '/goods',
+      name: 'Goods',
+      meta: {
+        title: '商品列表'
+      },
+      component: Goods
+    },
+    {
+      path: '/goodsdetail/:id',
+      name: 'GoodsDetail',
+      meta: {
+        title: '商品详情'
+      },
+      component: GoodsDetail
+    },
+    {
+      path: '/balance',
+      name: 'Balance',
+      meta: {
+        title: '结算'
+      },
+      component: Balance
+    },
+    {
+      path: '/payment',
+      name: 'Payment',
+      meta: {
+        title: '支付'
+      },
+      component: Payment
+    },
+    {
+      path: '/order',
+      name: 'Order',
+      meta: {
+        title: '我的订单'
+      },
+      component: Order
+    },
+    {
+      path: '/orderdetail/:id',
+      name: 'OrderDetail',
+      meta: {
+        title: '订单详情'
+      },
+      component: OrderDetail
     }
   ]
 })

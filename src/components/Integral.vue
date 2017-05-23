@@ -9,7 +9,9 @@
           <span class="label">3200</span>
         </div>
         <div class="grid-item right">
-          <span class="label">积分兑换说明</span>
+          <router-link class="label" to="integralUseDescription">
+             <span class="help">?</span>积分兑换说明
+          </router-link>
         </div>
       </div>
     </div>
@@ -59,7 +61,7 @@ export default {
     return {
       title: '',
       index: 0,
-      list: ['全部', '实体店积分', '签到积分', '积分兑换', '积分兑换']
+      list: ['全部', '实体店积分', '电商积分', '签到积分', '积分兑换']
     }
   }
 }
@@ -93,6 +95,19 @@ export default {
           padding: 15px 0;
           margin-top: -35px;
           font-size: 14px;
+          .help {
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            line-height: 13px;
+            font-size: 10px;
+            text-align: center;
+            border: 1px solid #fff;
+            border-radius: 50%;
+          }
+        }
+        .label {
+          color: #fff;
         }
       }
     }

@@ -39,7 +39,7 @@
     </card>
     
     <div class="footer">
-        <x-button type="warn">保存</x-button>
+        <x-button type="warn">提交</x-button>
     </div>
   </div>
 </template>

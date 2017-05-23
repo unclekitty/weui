@@ -6,11 +6,11 @@
       </cell>
     </group>
     <group class="form">
-      <x-input title="姓名" placeholder="张全蛋" v-model="userInfo.nickName" novalidate></x-input>
-      <x-input title="真实姓名" placeholder="张全蛋" v-model="userInfo.name" novalidate></x-input>
+      <x-input title="姓名" placeholder="请输入姓名" v-model="userInfo.nickName" novalidate></x-input>
+      <x-input title="真实姓名" placeholder="请输入真实姓名" v-model="userInfo.name" novalidate></x-input>
       <selector title="性别" :options="sex" v-model="userInfo.sex"></selector>
       <datetime title="生日" v-model="userInfo.birthday" :min-year="1970" :start-date="startDate" :end-date="endDate" confirm-text="确认" cancel-text="取消"></datetime>
-      <x-input title="手机号" placeholder="188****0000" v-model="userInfo.mobile" keyboard="number" is-type="china-mobile"></x-input>
+      <x-input title="手机号" placeholder="请输入手机号码" v-model="userInfo.mobile" keyboard="number" is-type="china-mobile"></x-input>
       <x-input title="电子邮箱" placeholder="请输入邮箱" v-model="userInfo.email" novalidate></x-input>
       <cell title="地址管理" is-link link="address"></cell>
       <cell title="修改密码" is-link link="resetpwd"></cell>

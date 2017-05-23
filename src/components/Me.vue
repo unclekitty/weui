@@ -8,9 +8,7 @@
             <router-link class="link center" to="profile">
               <img src="static/head.jpeg">
             </router-link>
-            <router-link class="link right" to="settings">
-              <i class="glyph-icon flaticon-settings-5"></i>
-            </router-link>
+            <a class="link right">&nbsp;</a>
           </div>
           <h3 class="name">
             <router-link class="link" to="profile">{{userInfo.name}}</router-link>
@@ -40,9 +38,9 @@
             <i class="glyph-icon flaticon-calendar-7"></i>
             <span class="label">签到</span>
           </grid-item>
-          <grid-item class="grid-item" link="integralRule">
-            <i class="glyph-icon flaticon-notepad"></i>
-            <span class="label">积分规则</span>
+          <grid-item class="grid-item" link="ecticket">
+            <i class="glyph-icon flaticon-bookmark"></i>
+            <span class="label">电商积分</span>
           </grid-item>
         </grid>
       </div>
@@ -50,17 +48,29 @@
     <!--integral-->
     <div class="integral">
       <grid slot="content" :rows="3">
-        <grid-item class="grid-item" link="integalExchangeRecord">
-          <i class="glyph-icon flaticon-calendar-2 blue"></i>
-          <span class="label">积分兑换纪录</span>
-        </grid-item>
         <grid-item class="grid-item" link="ticketlist">
-          <i class="glyph-icon flaticon-bookmark primary"></i>
-          <span class="label">小票拍摄纪录</span>
+          <i class="glyph-icon flaticon-calendar-2 blue"></i>
+          <span class="label">小票上传记录</span>
         </grid-item>
-        <grid-item class="grid-item" link="integalExchange">
+        <grid-item class="grid-item" link="ecticketlist">
+          <i class="glyph-icon flaticon-file-1 danger"></i>
+          <span class="label">电商上传记录</span>
+        </grid-item>
+        <grid-item class="grid-item" link="order">
           <i class="glyph-icon flaticon-gift warn"></i>
-          <span class="label">积分兑换</span>
+          <span class="label">我的订单</span>
+        </grid-item>
+        <grid-item class="grid-item" link="address">
+          <i class="glyph-icon flaticon-list warn"></i>
+          <span class="label">地址管理</span>
+        </grid-item>
+        <grid-item class="grid-item" link="integralRule">
+          <i class="glyph-icon flaticon-notepad primary"></i>
+          <span class="label">积分规则</span>
+        </grid-item>
+        <grid-item class="grid-item" link="settings">
+          <i class="glyph-icon flaticon-settings-5"></i>
+          <span class="label">设置</span>
         </grid-item>
       </grid>
     </div>
@@ -104,7 +114,12 @@ export default {
     sign () {
       let self = this
       let $http = this.$http
+      if (self.isSign) {
+        return
+      }
       $http.post(`a/api/onsign`, {}).then(res => {
+        let data = res.body
+        self.alert(data.status.info)
         self.isSign = true
       })
     },

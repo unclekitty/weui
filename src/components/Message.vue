@@ -65,7 +65,7 @@ export default {
       align-items: center;
       justify-content: space-between;
       color: #666;
-
+      
       &:before {
         content: " ";
         position: absolute;

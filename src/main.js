@@ -9,6 +9,8 @@ import { AlertPlugin, ConfirmPlugin, LoadingPlugin, WechatPlugin } from 'vux'
 import Navigation from 'vue-navigation'
 import VueResource from 'vue-resource'
 // import CryptoJS from 'crypto-js'
+import VueScroller from 'vue-scroller'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
 
 const storage = window.localStorage
 
@@ -49,6 +51,8 @@ Vue.use(require('vue-wechat-title'))
 Vue.use(LoadingPlugin)
 Vue.use(WechatPlugin)
 Vue.use(VueResource)
+Vue.use(VueScroller)
+Vue.use(VueAwesomeSwiper)
 
 FastClick.attach(document.body)
 
