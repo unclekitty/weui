@@ -3,7 +3,7 @@
      <box gap="15px 15px">
       <section v-if="step==0">
         <group class="form-group">
-          <x-input title="手机号码" placeholder="请输入手机号码" v-model="mobile" keyboard="number" is-type="china-mobile"></x-input>
+          <x-input title="手机号码" type="tel" placeholder="请输入手机号码" v-model="mobile" keyboard="number" is-type="china-mobile"></x-input>
         </group>
         <group class="form-group">
           <x-input title="验证码" type="text" v-model="code" class="weui-cell_vcode">
@@ -24,10 +24,10 @@
       </section>
       <section v-if="step==1">
         <group class="form-group">
-          <x-input title="密码" type="password" placeholder="请输入密码" v-model="password" :min="6" :max="6"></x-input>
+          <x-input title="密码" type="password" placeholder="请输入新密码(6～16位)" v-model="password" :min="6" :max="16"></x-input>
         </group>
         <group class="form-group">
-          <x-input title="确认密码" v-model="refPassword" type="password" placeholder="请确认密码" :equal-with="password"></x-input>
+          <x-input title="确认密码" v-model="refPassword" type="password" placeholder="请确认密码" :equal-with="password" :min="6" :max="16"></x-input>
         </group>
         <div class="wp">
           <span>
@@ -92,10 +92,7 @@ export default {
         if (response.status.index === '10000') {
           router.push('sigin')
         } else {
-          alert.show({
-            title: '提示',
-            content: response.status.info
-          })
+          self.alert(response.status.info)
         }
       })
     },
@@ -116,6 +113,13 @@ export default {
       } else {
         self.step += 1
       }
+    },
+    alert (message) {
+      const alert = this.$vux.alert
+      alert.show({
+        title: '提示',
+        content: message
+      })
     }
   },
   data () {

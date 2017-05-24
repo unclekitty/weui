@@ -2,8 +2,8 @@
   <div class="page-address-edit">
     <group class="form">
       <x-input title="原密码" type="password" v-model="oldPassword" placeholder="请输入原密码"></x-input>
-      <x-input title="新密码" type="password" v-model="password" placeholder="请输入6-20位密码" :min="6" :max="20"></x-input>
-      <x-input title="确认新密码" type="password" v-model="refPassword" placeholder="请再次输入新密码确认" :equal-with="password"></x-input>
+      <x-input title="新密码" type="password" v-model="password" placeholder="请输入新密码(6～16位)" :min="6" :max="16"></x-input>
+      <x-input title="确认新密码" type="password" v-model="refPassword" placeholder="请再次输入新密码确认" :equal-with="password" :min="6" :max="16"></x-input>
     </group>
     
     <div class="footer">

@@ -32,11 +32,27 @@ const store = new Vuex.Store({
     },
     address: {
       state: {
-        data: {}
+        data: {},
+        updated: false
       },
       mutations: {
         selected (state, payload) {
           state.data = payload.data
+        },
+        update (state, payload) {
+          state.updated = payload.updated
+        }
+      }
+    },
+    user: {
+      state: {
+        info: {},
+        updated: false
+      },
+      mutations: {
+        'user:update' (state, payload) {
+          state.info = payload.info
+          state.updated = payload.updated
         }
       }
     }
@@ -58,7 +74,7 @@ FastClick.attach(document.body)
 
 Vue.config.productionTip = false
 Vue.http.options.root = 'http://duo.authorc.com/duoli'
-// Vue.http.options.root = 'http://10.21.32.99:8080/duoli'
+// Vue.http.options.root = 'http://10.21.32.8:8080/duoli'
 Vue.http.headers.common['name'] = 'duoli'
 Vue.http.interceptors.push((request, next) => {
   const token = storage.getItem('token') || ''
@@ -85,7 +101,7 @@ Vue.http.interceptors.push((request, next) => {
 const http = Vue.http
 let wx = Vue.wechat
 
-http.post('a/weixin/api/getAuth', {url: `${location.origin}${location.pathname}`}).then(res => {
+http.post('a/weixin/api/getAuth', {url: `${location.origin}${location.pathname}${location.search}`}).then(res => {
   console.log(res)
   let results = res.body.results
   wx.config({

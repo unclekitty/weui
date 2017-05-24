@@ -1,18 +1,18 @@
 <template>
   <div class="page-ticket-list">
-    <scroller lock-x scrollbar-y>
+    <scroller>
       <div class="wrapper">
         <card class="card" v-for="item in list" :key="item.id">
           <div slot="header" class="header">
             <span class="title">{{item.createDate}}</span>
-            <span class="primary">审核通过</span>
+            <span class="primary">{{status[item.billStatus]}}</span>
           </div>
           <div slot="content" class="content">
             <span class="thumb">
               <img :src="item.imgurl">
             </span>
             <div class="body">
-              <div class="title">{{item.amount}}</div>
+              <div class="title">消费金额：{{item.amount}}元</div>
               <p class="sub">
                 <span>{{item.auditText}}</span>
               </p>
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { Card, Group, Cell, Icon } from 'vux'
+import { Box, Card, Group, Cell, Icon } from 'vux'
 import moment from 'moment'
 
 export default {
@@ -34,6 +34,7 @@ export default {
     self.load()
   },
   components: {
+    Box,
     Card,
     Group,
     Cell,
@@ -56,7 +57,12 @@ export default {
   data () {
     return {
       title: '',
-      list: []
+      list: [],
+      status: {
+        1: '审核通过',
+        2: '审核中',
+        3: '审核失败'
+      }
     }
   }
 }
@@ -64,14 +70,13 @@ export default {
 
 <style lang="scss">
 .page-ticket-list{
-  
   .wrapper {
     overflow: hidden;
+    padding: 15px;
   }
-
   .card{
+    border-radius: 6px;
     box-shadow: 2px 2px 1px rgba(204, 204, 204, 0.51);
-    margin-top: 20px;
 
     &:before,&:after{
       display: none;
