@@ -8,7 +8,7 @@
       <x-input title="邮政编码" placeholder="请输入邮政编码" v-model="zipcode" novalidate></x-input>
     </group>
 
-    <group>
+    <group v-if="!isNaN(id)">
         <x-switch title="默认地址" v-model="isDefault"></x-switch>
     </group>
     <div class="footer">
@@ -32,7 +32,8 @@ export default {
     let $route = this.$route
     let $http = this.$http
     self.id = $route.params['id']
-    if (self.id !== '0') {
+    if (isNaN(self.id)) {
+      $route.meta.title = '编辑地址'
       $http.post(`a/api/address/${self.id}`).then(res => {
         let results = res.body.results
         let area = parseArea(results.area.id)
@@ -41,6 +42,9 @@ export default {
         self.zipcode = results.zipCode
         self.area = area
       })
+    } else {
+      $route.meta.title = '新增地址'
+      self.isDefault = parseInt(self.id) === 0
     }
   },
   components: {
@@ -59,6 +63,7 @@ export default {
       let self = this
       let $http = this.$http
       let $router = this.$router
+      let $store = this.$store
       let fields = [
         'id',
         'name',
@@ -72,17 +77,19 @@ export default {
       data.isDefault = data.isDefault ? 1 : 0
       console.log(self.area)
       data.areaId = self.area[2]
-      if (self.id === '0') {
+      if (!isNaN(self.id)) {
         $http.post(`a/api/address`, data).then(res => {
           let response = res.body
           self.alert(response.status.info)
           $router.go(-1)
+          $store.commit('update', {updated: true})
         })
       } else {
         $http.put(`a/api/address/${self.id}`, data).then(res => {
           let response = res.body
           self.alert(response.status.info)
           $router.go(-1)
+          $store.commit('update', {updated: true})
         })
       }
     },

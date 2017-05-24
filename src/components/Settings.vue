@@ -15,8 +15,6 @@
 <script>
 import { XInput, XButton, Group, Cell, Icon, Selector, Datetime } from 'vux'
 
-const storage = window.localStorage
-
 export default {
   created () {
 
@@ -33,7 +31,8 @@ export default {
   methods: {
     sigout () {
       const $router = this.$router
-      storage.clear()
+      localStorage.clear()
+      sessionStorage.clear()
       $router.replace('/')
     },
     alert (message) {

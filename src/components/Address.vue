@@ -11,7 +11,7 @@
         </div>
         <div slot="footer" class="footer">
             <div class="weui-cells weui-cells_checkbox">
-                <label class="weui-cell weui-check__label">
+                <label class="weui-cell weui-check__label" @click="setDefault(item, $event)">
                     <div class="weui-cell__hd">
                         <input type="checkbox" class="weui-check" name="isdefault" v-model="item.isDefault"/>
                         <i class="weui-icon-checked"></i>
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { XButton, Checklist, Box, Card, Group, Cell, Icon } from 'vux'
 
 export default {
@@ -74,12 +75,22 @@ export default {
         self.list = list
       })
     },
+    onUpdate (val, old) {
+      let self = this
+      let $store = this.$store
+      console.log(val)
+      if (val) {
+        self.load()
+        $store.commit('update', {updated: false})
+      }
+    },
     editor (id) {
+      let self = this
       let $router = this.$router
       if (id) {
         $router.push(`address/${id}`)
       } else {
-        $router.push('address/0')
+        $router.push(`address/${self.list.length || 0}`)
       }
     },
     dele (id) {
@@ -93,6 +104,16 @@ export default {
             self.load()
           })
         }
+      })
+    },
+    setDefault (item, event) {
+      let self = this
+      let $http = this.$http
+      if (item.isDefault) {
+        event.preventDefault()
+      }
+      $http.put(`a/api/address/${item.id}`, {id: item.id, isDefault: 1}).then(res => {
+        self.load()
       })
     },
     select (item) {
@@ -125,12 +146,20 @@ export default {
       })
     }
   },
+  computed: {
+    ...mapState({
+      updated: state => state.address.updated
+    })
+  },
   data () {
     return {
       title: '',
       list: [],
       isSelect: false
     }
+  },
+  watch: {
+    'updated': 'onUpdate'
   }
 }
 </script>
@@ -195,6 +224,7 @@ export default {
             }
             label{
                 padding: 0;
+                background: none!important;
                 &:before, &:after{
                     display: none;
                 }

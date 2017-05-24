@@ -3,10 +3,10 @@
     <box gap="15px 15px">
       <card class="card" v-for="item in list" :key="item.id">
         <div slot="header" class="header">
-          <span class="title">2017-5-12 8:00</span>
-          <span class="primary">小票审核通过</span>
+          <span class="title">{{item.createDate}}</span>
+          <span class="primary">{{item.msg.title}}</span>
         </div>
-        <p slot="content" class="content">小票兑换成功+20积分，目前积分520分</p>
+        <p slot="content" class="content">{{item.msg.content}}</p>
       </card>
     </box>
   </div>

@@ -26,6 +26,7 @@ import AddressEdit from '@/components/AddressEdit'
 import Settings from '@/components/Settings'
 
 const storage = window.localStorage
+// storage.clear()
 
 Vue.use(Router)
 

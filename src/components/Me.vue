@@ -13,17 +13,17 @@
             </router-link>
           </div>
           <h3 class="name">
-            <router-link class="link" to="profile">{{userInfo.name}}</router-link>
+            <router-link class="link" to="profile">{{userInfo.nickName}}</router-link>
           </h3>
           <div class="grid-wrapper">
             <grid slot="content" :rows="2">
               <grid-item class="grid-item" link="integral">
                 <span class="title">我的积分</span>
-                <span>100</span>
+                <span>{{userInfo.dlUserAccount.integral}}</span>
               </grid-item>
               <grid-item class="grid-item" link="message">
                 <span class="title">我的消息</span>
-                <span>0</span>
+                <span>{{userInfo.msgCount}}</span>
               </grid-item>
             </grid>
           </div>
@@ -36,9 +36,10 @@
             <i class="glyph-icon flaticon-photo-camera"></i>
             <span class="label">拍摄小票</span>
           </grid-item>
-          <grid-item class="grid-item" :class="{'no-sign': !isSign}" @click.native="sign()">
+          <grid-item class="grid-item" :class="{'no-sign': !userInfo.isSign}" @click.native="sign()">
             <i class="glyph-icon flaticon-calendar-7"></i>
-            <span class="label">签到</span>
+            <span class="label" v-if="userInfo.isSign">已签到</span>
+            <span class="label" v-else>签到</span>
           </grid-item>
           <grid-item class="grid-item" link="integralRule">
             <i class="glyph-icon flaticon-notepad"></i>
@@ -50,15 +51,15 @@
     <!--integral-->
     <div class="integral">
       <grid slot="content" :rows="3">
-        <grid-item class="grid-item" link="integalExchangeRecord">
-          <i class="glyph-icon flaticon-calendar-2 blue"></i>
-          <span class="label">积分兑换纪录</span>
-        </grid-item>
         <grid-item class="grid-item" link="ticketlist">
           <i class="glyph-icon flaticon-bookmark primary"></i>
           <span class="label">小票拍摄纪录</span>
         </grid-item>
-        <grid-item class="grid-item" link="integalExchange">
+        <grid-item class="grid-item" link="integalExchangeRecord" style="visibility: hidden;">
+          <i class="glyph-icon flaticon-calendar-2 blue"></i>
+          <span class="label">积分兑换纪录</span>
+        </grid-item>
+        <grid-item class="grid-item" link="integalExchange" style="visibility: hidden;">
           <i class="glyph-icon flaticon-gift warn"></i>
           <span class="label">积分兑换</span>
         </grid-item>
@@ -71,27 +72,14 @@
 <script>
 import _ from 'lodash'
 import { Blur, Card, Group, Grid, GridItem } from 'vux'
+import { mapState } from 'vuex'
+
 const storage = window.localStorage
 
 export default {
   created () {
     let self = this
-    let $http = this.$http
-    let userInfo = JSON.parse(storage.getItem('userInfo'))
-    $http.post(`a/api/user/${userInfo.id}`, {}).then(res => {
-      let response = res.body
-      let info = response.results
-      let fields = [
-        'nickName',
-        'name',
-        'sex',
-        'birthday',
-        'mobile',
-        'email'
-      ]
-      _.merge(self.userInfo, info)
-      _.merge(self.userInfo, _.pick(info.dlUserInfo, fields))
-    })
+    self.loadInfo()
   },
   components: {
     Blur,
@@ -101,11 +89,44 @@ export default {
     GridItem
   },
   methods: {
+    loadInfo () {
+      let self = this
+      let $http = this.$http
+      let userInfo = JSON.parse(storage.getItem('userInfo'))
+      $http.post(`a/api/user/${userInfo.id}`, {}).then(res => {
+        let response = res.body
+        let info = response.results
+        let fields = [
+          'nickName',
+          'name',
+          'sex',
+          'birthday',
+          'mobile',
+          'email'
+        ]
+        _.merge(self.userInfo, info)
+        _.merge(self.userInfo, _.pick(info.dlUserInfo, fields))
+        storage.setItem('userInfo', JSON.stringify(self.userInfo))
+      })
+    },
+    onUpdate (val, old) {
+      let self = this
+      let $store = this.$store
+      console.log(val)
+      if (val) {
+        self.loadInfo()
+        $store.commit('user:update', {updated: false})
+      }
+    },
     sign () {
       let self = this
       let $http = this.$http
       $http.post(`a/api/onsign`, {}).then(res => {
-        self.isSign = true
+        let resData = res.body
+        self.alert(resData.status.info)
+        if (resData.status.index === '10000') {
+          self.loadInfo()
+        }
       })
     },
     alert (message) {
@@ -115,6 +136,11 @@ export default {
         content: message
       })
     }
+  },
+  computed: {
+    ...mapState({
+      updated: state => state.user.updated
+    })
   },
   data () {
     return {
@@ -133,10 +159,15 @@ export default {
         sex: '',
         birthday: '',
         mobile: '',
-        email: ''
-      },
-      isSign: false
+        email: '',
+        isSign: false,
+        msgCount: 0,
+        dlUserAccount: {}
+      }
     }
+  },
+  watch: {
+    'updated': 'onUpdate'
   }
 }
 </script>

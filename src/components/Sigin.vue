@@ -3,10 +3,10 @@
 
     <box gap="15px 15px">
       <group class="form-group">
-        <x-input title="手机号码" v-model="mobile" placeholder="请输入手机号码" keyboard="number" is-type="china-mobile"></x-input>
+        <x-input title="手机号码" type="tel" v-model="mobile" placeholder="请输入手机号码" keyboard="number" is-type="china-mobile"></x-input>
       </group>
       <group class="form-group">
-        <x-input title="密码" type="password" placeholder="不小于6位" v-model="password" :min="6" :max="6"></x-input>
+        <x-input title="密码" type="password" placeholder="请输入密码" v-model="password" :min="6" :max="16"></x-input>
       </group>
       <div class="wp">
         <span>

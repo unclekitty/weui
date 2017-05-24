@@ -1,27 +1,22 @@
 <template>
   <div class="page-profile">
-    <group class="header">
-      <cell title="头像" value-align="right">
-        <img slot="icon" :src="header">
-      </cell>
-    </group>
-    <group class="form">
-      <x-input title="姓名" placeholder="张全蛋" v-model="userInfo.nickName" novalidate></x-input>
-      <x-input title="真实姓名" placeholder="张全蛋" v-model="userInfo.name" novalidate></x-input>
-      <selector title="性别" :options="sex" v-model="userInfo.sex"></selector>
-      <datetime title="生日" v-model="userInfo.birthday" :min-year="1970" :start-date="startDate" :end-date="endDate" confirm-text="确认" cancel-text="取消"></datetime>
-      <x-input title="手机号" placeholder="188****0000" v-model="userInfo.mobile" keyboard="number" is-type="china-mobile"></x-input>
-      <x-input title="电子邮箱" placeholder="请输入邮箱" v-model="userInfo.email" novalidate></x-input>
-      <cell title="地址管理" is-link link="address"></cell>
-      <cell title="修改密码" is-link link="resetpwd"></cell>
-    </group>
-
-    <group>
-      <cell title="退出登录" is-link @click.native="sigout"></cell>
-    </group>
-
+    <div class="wrapper">
+      <group class="header">
+        <cell title="头像" value-align="right">
+          <img slot="icon" :src="header">
+        </cell>
+      </group>
+      <group class="form">
+        <x-input title="昵称" placeholder="请输入昵称" v-model="userInfo.nickName" novalidate></x-input>
+        <x-input title="真实姓名" placeholder="情输入真实姓名" v-model="userInfo.name" novalidate></x-input>
+        <selector title="性别" :options="sex" v-model="userInfo.sex"></selector>
+        <datetime title="生日" v-model="userInfo.birthday" :min-year="1970" :start-date="startDate" :end-date="endDate" confirm-text="确认" cancel-text="取消"></datetime>
+        <x-input title="手机号" placeholder="情输入手机号" v-model="userInfo.mobile" keyboard="number" is-type="china-mobile"></x-input>
+        <x-input title="电子邮箱" placeholder="请输入邮箱" v-model="userInfo.email" novalidate></x-input>
+      </group>
+    </div>
     <div class="footer">
-        <x-button type="warn" @click.native="updateInfo()">保存</x-button>
+      <x-button type="warn" @click.native="updateInfo()">保存</x-button>
     </div>
   </div>
 </template>
@@ -67,6 +62,7 @@ export default {
     updateInfo () {
       const self = this
       const $http = this.$http
+      let $store = this.$store
       let fields = [
         'nickName',
         'name',
@@ -80,6 +76,7 @@ export default {
       $http.put(`a/api/user/${self.userInfo.id}`, data).then(res => {
         let response = res.body
         self.alert(response.status.info)
+        $store.commit('user:update', {updated: true})
       })
     },
     sigout () {
@@ -117,6 +114,10 @@ export default {
 
 <style lang="scss">
 .page-profile{
+  .wrapper {
+    overflow: hidden;
+    padding-bottom: 44px;
+  }
   .header{
     .weui-cells{
       margin: 0;
