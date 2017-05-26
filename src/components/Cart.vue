@@ -96,6 +96,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '~include-media/dist/_include-media.scss';
+
 .page-cart{
   .card{
     border-radius: 6px;
@@ -194,7 +196,7 @@ export default {
 
       .weui-cells_checkbox {
         margin: 0;
-        width: 40px;
+        width: 35px;
         background: inherit;
 
         &::before, &:after{
@@ -207,6 +209,36 @@ export default {
           }
           .weui-cell__hd{
             padding: 0;
+          }
+        }
+      }
+    }
+    @include media("<=phone") {
+      .content{
+        .cart-item {
+          .thumb {
+            width: 70px;
+            height: 70px;
+            margin-right: 10px;
+          }
+          .body {
+            .title {
+              font-size: 1.2em;
+            }
+
+            .sub {
+              & > span {
+                font-size: 1em;
+              }
+              .number {
+                .vux-number-selector {
+                  padding: 4px 6px 2px 6px;
+                }
+                .vux-number-input {
+                  width: 35px!important;
+                }
+              }
+            }
           }
         }
       }

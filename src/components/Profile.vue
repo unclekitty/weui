@@ -25,6 +25,7 @@
 import _ from 'lodash'
 import { XInput, XButton, Group, Cell, Icon, Selector, Datetime } from 'vux'
 import moment from 'moment'
+import { User } from '../api'
 
 const storage = window.localStorage
 
@@ -65,22 +66,14 @@ export default {
   methods: {
     updateInfo () {
       const self = this
-      const $http = this.$http
       let $store = this.$store
-      let fields = [
-        'nickName',
-        'name',
-        'sex',
-        'birthday',
-        'mobile',
-        'email'
-      ]
-      let data = _.merge({}, _.pick(self.userInfo, fields))
-      data.birthday = moment(data.birthday).format('YYYY-MM-DD HH:mm:ss')
-      $http.put(`a/api/user/${self.userInfo.id}`, data).then(res => {
-        let response = res.body
-        self.alert(response.status.info)
+      User.update(self.userInfo)
+      .then(res => {
+        self.alert(res.info)
         $store.commit('user:update', {updated: true})
+      })
+      .catch(error => {
+        self.alert(error.info)
       })
     },
     sigout () {

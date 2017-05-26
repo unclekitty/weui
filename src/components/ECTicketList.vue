@@ -2,6 +2,18 @@
   <div class="page-ecticket-list">
     <scroller lock-x scrollbar-y>
       <div class="wrapper">
+          <!--spinner-->
+          <div class="spinner" v-if="loading || list.length === 0">
+            <div v-if="loading">
+              <spinner type="lines"></spinner>
+              <p>正在加载...</p>
+            </div>
+            <div v-else-if="list.length === 0">
+              <icon type="info"></icon>
+              <p>您还没有电商兑换记录...</p>
+            </div>
+          </div>
+          <!--/spinner-->
         <card class="card" v-for="item in list" :key="item.id">
           <div slot="header" class="header">
             <span class="title">{{item.createDate}}</span>
@@ -11,15 +23,15 @@
             <div class="fields">
               <div class="item">
                 <span>电商平台：</span>
-                <span>天猫</span>
+                <span>{{ecommerce[item.etyep]}}</span>
               </div>
               <div class="item">
                 <span>订单编号：</span>
-                <span>20170920323232432</span>
+                <span>{{item.orderNumber}}</span>
               </div>
               <div class="item">
                 <span>订单金额：</span>
-                <span>320积分</span>
+                <span>{{item.amount}}元</span>
               </div>
             </div>
           </div>
@@ -34,8 +46,8 @@
 </template>
 
 <script>
-import { Box, Card, Group, Cell, Icon } from 'vux'
-import moment from 'moment'
+import { Box, Card, Group, Cell, Icon, Spinner } from 'vux'
+import { EcTicket } from '../api'
 
 export default {
   created () {
@@ -47,26 +59,34 @@ export default {
     Card,
     Group,
     Cell,
-    Icon
+    Icon,
+    Spinner
   },
   methods: {
     load () {
       let self = this
-      let $http = this.$http
-      $http.post(`a/api /bill/list`, {}).then(res => {
-        let response = res.body
-        let list = response.results.list
-        for (let i = 0; i < list.length; i++) {
-          list[i].createDate = moment(list[i].createDate).format('YYYY-MM-DD HH:mm')
-        }
-        self.list = list
+      EcTicket.query()
+      .then(res => {
+        setTimeout(() => {
+          self.list = res.list
+          self.loading = false
+        }, 1000)
+      })
+      .catch(error => {
+        console.log(error)
       })
     }
   },
   data () {
     return {
       title: '',
-      list: []
+      list: [],
+      ecommerce: {
+        1: '天猫',
+        2: '京东',
+        3: '一号店'
+      },
+      loading: true
     }
   }
 }

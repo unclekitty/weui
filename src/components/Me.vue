@@ -2,83 +2,83 @@
   <div class="page-me">
     <scroller>
       <div class="content">
-	    <div class="relative">
-	      <div class="bg" style="background-image: url(static/bg.jpg);">
-	        <div class="wrapper">
-	          <div class="face">
-	            <a class="link left">&nbsp;</a>
-	            <router-link class="link center" to="profile">
-	              <img :src="userInfo.headimgurl">
-	            </router-link>
-		    <router-link class="link right" to="settings">
-		      <i class="glyph-icon flaticon-settings-5"></i>
-	            </router-link>
-	          </div>
-	          <h3 class="name">
-	            <router-link class="link" to="profile">{{userInfo.nickName}}</router-link>
-	          </h3>
-	          <div class="grid-wrapper">
-	            <grid slot="content" :rows="2">
-	              <grid-item class="grid-item" link="integral">
-	                <span class="title">我的积分</span>
-	                <span>{{userInfo.dlUserAccount.integral}}</span>
-	              </grid-item>
-	              <grid-item class="grid-item" link="message">
-	                <span class="title">我的消息</span>
-	                <span>{{userInfo.msgCount}}</span>
-	              </grid-item>
-	            </grid>
-	          </div>
-	        </div>
-	      </div>
-	      <!---->
-	      <div class="panel">
-	        <grid slot="content" :rows="3">
-	          <grid-item class="grid-item" link="ticket">
-	            <i class="glyph-icon flaticon-photo-camera"></i>
-	            <span class="label">拍摄小票</span>
-	          </grid-item>
-	          <grid-item class="grid-item" :class="{'no-sign': !userInfo.isSign}" @click.native="sign()">
-	            <i class="glyph-icon flaticon-calendar-7"></i>
-	            <span class="label" v-if="userInfo.isSign">已签到</span>
-	            <span class="label" v-else>签到</span>
-	          </grid-item>
-	          <grid-item class="grid-item" link="ecticket">
-	            <i class="glyph-icon flaticon-bookmark"></i>
-	            <span class="label">电商积分</span>
-	          </grid-item>
-	        </grid>
-	      </div>
-	    </div>
-	    <!--integral-->
-	    <div class="integral">
-	      <grid slot="content" :rows="3">
-	        <grid-item class="grid-item" link="ticketlist">
-	          <i class="glyph-icon flaticon-calendar-2 blue"></i>
-	          <span class="label">小票上传记录</span>
-	        </grid-item>
-	        <grid-item class="grid-item" link="ecticketlist">
-	          <i class="glyph-icon flaticon-file-1 danger"></i>
-	          <span class="label">电商上传记录</span>
-	        </grid-item>
-	        <grid-item class="grid-item" link="order">
-	          <i class="glyph-icon flaticon-gift warn"></i>
-	          <span class="label">我的订单</span>
-	        </grid-item>
-	        <grid-item class="grid-item" link="address">
-	          <i class="glyph-icon flaticon-list warn"></i>
-	          <span class="label">地址管理</span>
-	        </grid-item>
-	        <grid-item class="grid-item" link="integralRule">
-	          <i class="glyph-icon flaticon-notepad primary"></i>
-	          <span class="label">积分规则</span>
-	        </grid-item>
-	        <grid-item class="grid-item" link="settings">
-	          <i class="glyph-icon flaticon-settings-5"></i>
-	          <span class="label">设置</span>
-	        </grid-item>
-	      </grid>
-	    </div>
+        <div class="relative">
+          <div class="bg" style="background-image: url(static/bg.jpg);">
+            <div class="wrapper">
+              <div class="face">
+                <a class="link left">&nbsp;</a>
+                <router-link class="link center" to="profile">
+                  <img :src="userInfo.headimgurl">
+                </router-link>
+                <router-link class="link right" to="settings">
+                  <i class="glyph-icon flaticon-settings-5"></i>
+                </router-link>
+              </div>
+              <h3 class="name">
+                <router-link class="link" to="profile">{{userInfo.nickName}}</router-link>
+              </h3>
+              <div class="grid-wrapper">
+                <grid slot="content" :rows="2">
+                  <grid-item class="grid-item" link="integral">
+                    <span class="title">我的积分</span>
+                    <span>{{userInfo.dlUserAccount.integral}}</span>
+                  </grid-item>
+                  <grid-item class="grid-item" link="message">
+                    <span class="title">我的消息</span>
+                    <span>{{userInfo.msgCount}}</span>
+                  </grid-item>
+                </grid>
+              </div>
+            </div>
+          </div>
+          <!---->
+          <div class="panel">
+            <grid slot="content" :rows="3">
+              <grid-item class="grid-item" link="ticket">
+                <i class="glyph-icon flaticon-photo-camera"></i>
+                <span class="label">拍摄小票</span>
+              </grid-item>
+              <grid-item class="grid-item" :class="{'no-sign': !userInfo.isSign}" @click.native="sign()">
+                <i class="glyph-icon flaticon-calendar-7"></i>
+                <span class="label" v-if="userInfo.isSign">已签到</span>
+                <span class="label" v-else>签到</span>
+              </grid-item>
+              <grid-item class="grid-item" link="ecticket">
+                <i class="glyph-icon flaticon-bookmark"></i>
+                <span class="label">电商积分</span>
+              </grid-item>
+            </grid>
+          </div>
+        </div>
+        <!--integral-->
+        <div class="integral">
+          <grid slot="content" :rows="3">
+            <grid-item class="grid-item" link="ticketlist">
+              <i class="glyph-icon flaticon-calendar-2 blue"></i>
+              <span class="label">小票上传记录</span>
+            </grid-item>
+            <grid-item class="grid-item" link="ecticketlist">
+              <i class="glyph-icon flaticon-file-1 danger"></i>
+              <span class="label">电商上传记录</span>
+            </grid-item>
+            <grid-item class="grid-item" link="order">
+              <i class="glyph-icon flaticon-gift warn"></i>
+              <span class="label">我的订单</span>
+            </grid-item>
+            <grid-item class="grid-item" link="address">
+              <i class="glyph-icon flaticon-list warn"></i>
+              <span class="label">地址管理</span>
+            </grid-item>
+            <grid-item class="grid-item" link="integralRule">
+              <i class="glyph-icon flaticon-notepad primary"></i>
+              <span class="label">积分规则</span>
+            </grid-item>
+            <grid-item class="grid-item" link="settings">
+              <i class="glyph-icon flaticon-settings-5"></i>
+              <span class="label">设置</span>
+            </grid-item>
+          </grid>
+        </div>
       </div>
     </scroller>
   </div>
@@ -88,6 +88,7 @@
 import _ from 'lodash'
 import { Blur, Card, Group, Grid, GridItem } from 'vux'
 import { mapState } from 'vuex'
+import { User } from '../api'
 
 const storage = window.localStorage
 
@@ -106,28 +107,16 @@ export default {
   methods: {
     loadInfo () {
       let self = this
-      let $http = this.$http
       let $store = this.$store
       let userInfo = JSON.parse(storage.getItem('userInfo'))
-      $http.post(`a/api/user/${userInfo.id}`, {}).then(res => {
-        let response = res.body
-        let info = response.results
-        let fields = [
-          'nickName',
-          'name',
-          'sex',
-          'birthday',
-          'mobile',
-          'email',
-          'headimgurl'
-        ]
+      User.info(userInfo.id)
+      .then(info => {
         _.merge(self.userInfo, info)
-        _.merge(self.userInfo, _.pick(info.dlUserInfo, fields))
-        if (!self.userInfo.headimgurl) {
-          self.userInfo.headimgurl = 'static/head.jpeg'
-        }
         $store.commit('user:update', {userInfo: self.userInfo, updated: false})
         storage.setItem('userInfo', JSON.stringify(self.userInfo))
+      })
+      .catch(error => {
+        console.log(error)
       })
     },
     onUpdate (val, old) {

@@ -59,6 +59,7 @@
 <script>
 import { mapState } from 'vuex'
 import { XButton, Checklist, Box, Card, Group, Cell, Icon, Spinner } from 'vux'
+import { Address } from '../api'
 
 export default {
   created () {
@@ -83,9 +84,7 @@ export default {
   methods: {
     load () {
       let self = this
-      const $api = this.$api
-      const address = $api.address
-      address.query().then(list => {
+      Address.query().then(list => {
         self.list = list
         self.loading = false
       })
@@ -114,25 +113,31 @@ export default {
     },
     dele (id) {
       let self = this
-      let $http = this.$http
       self.confirm('确定要删除？', flag => {
         if (flag) {
-          $http.delete(`a/api/address/${id}`, {id: id}).then(res => {
-            let response = res.body
-            self.alert(response.status.info)
+          Address.remove(id)
+          .then(res => {
+            self.alert(res.info)
             self.load()
+          })
+          .catch(error => {
+            self.alert(error.info)
           })
         }
       })
     },
     setDefault (item, event) {
       let self = this
-      let $http = this.$http
       if (item.isDefault) {
         event.preventDefault()
       }
-      $http.put(`a/api/address/${item.id}`, {id: item.id, isDefault: 1}).then(res => {
+      // 设置默认
+      Address.setDefault(item.id)
+      .then(res => {
         self.load()
+      })
+      .catch(error => {
+        console.log(error)
       })
     },
     select (item) {

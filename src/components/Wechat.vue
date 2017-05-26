@@ -38,9 +38,9 @@
 
 <script>
 import _ from 'lodash'
-import Vue from 'vue'
 import isMobilePhone from 'validator/lib/isMobilePhone'
 import { Box, Group, Cell, Icon, XInput, XButton, Countdown } from 'vux'
+import { User } from '../api'
 
 const USERTYPE = 1
 const SENDTYPE = 1
@@ -73,9 +73,7 @@ export default {
     },
     sigin () {
       const self = this
-      const $http = this.$http
       const router = this.$router
-      const alert = this.$vux.alert
       let fields = [
         'mobile',
         'password',
@@ -93,19 +91,18 @@ export default {
         self.alert('请输入密码')
         return
       }
-      $http.post('a/api/bund', data).then(res => {
-        let response = res.body
-        let userInfo = response.results
-        if (response.status.index === '10000') {
-          storage.setItem('token', response.token)
-          storage.setItem('userInfo', JSON.stringify(userInfo))
-          router.push('me')
-        } else {
-          alert.show({
-            title: '提示',
-            content: response.status.info
-          })
-        }
+      // 验证
+      User.wxbund(data)
+      .then(res => {
+        storage.setItem('token', res.token)
+        storage.setItem('userInfo', JSON.stringify(res.userInfo))
+        router.push('me')
+      })
+      .catch(error => {
+        self.alert.show({
+          title: '提示',
+          content: error.info
+        })
       })
     },
     getAuthCode () {
@@ -149,24 +146,22 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    let $http = Vue.http
     let openId = storage.getItem('openId')
     let redirect = search()['redirect'] || '/me'
     if (redirect === 'wechat') {
       redirect = true
     }
-    console.log(search())
     if (openId) {
-      $http.post('a/api/wxlogin', {openId: openId}).then(res => {
-        let response = res.body
-        let userInfo = response.results
-        if (response.status.index === '10000') {
-          storage.setItem('token', response.token)
-          storage.setItem('userInfo', JSON.stringify(userInfo))
-          next(redirect)
-        } else {
-          next()
-        }
+      // openId 登录
+      User.wxlogin()
+      .then(res => {
+        storage.setItem('token', res.token)
+        storage.setItem('userInfo', JSON.stringify(res.userInfo))
+        next(redirect)
+      })
+      .catch(error => {
+        console.log(error)
+        next()
       })
     } else {
       next()

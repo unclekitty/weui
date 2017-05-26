@@ -54,6 +54,7 @@
 import _ from 'lodash'
 import { Group, Grid, GridItem, Cell, Icon, Tab, TabItem, Swiper, SwiperItem, Spinner } from 'vux'
 import { mapState } from 'vuex'
+import { Integral } from '../api'
 
 // const storage = window.localStorage
 
@@ -79,26 +80,19 @@ export default {
   methods: {
     load () {
       let self = this
-      let $http = this.$http
       let data = {}
       let fields = [
         'integralType',
         'recordType'
       ]
       _.merge(data, _.pick(self.$data, fields))
-      if (data.integralType === 0) {
-        delete data.integralType
-      }
-      if (data.recordType === 2) {
-        delete data.integralType
-      } else {
-        delete data.recordType
-      }
-      $http.post(`a/api/integralLog/list`, data).then(res => {
-        let response = res.body
-        let list = response.results.list
-        self.list = list
+      Integral.query(data)
+      .then(res => {
+        self.list = res.list
         self.loading = false
+      })
+      .catch(error => {
+        console.log(error)
       })
     },
     onChange (index, old) {

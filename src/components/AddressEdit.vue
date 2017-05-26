@@ -21,6 +21,7 @@
 import _ from 'lodash'
 import isMobilePhone from 'validator/lib/isMobilePhone'
 import { XAddress, XInput, XButton, XSwitch, ChinaAddressV3Data, Group, Cell, Icon, Selector, Datetime } from 'vux'
+import { Address } from '../api'
 
 const parseArea = (code) => {
   let no = parseInt(code)
@@ -31,17 +32,18 @@ export default {
   mounted () {
     let self = this
     let $route = this.$route
-    let $http = this.$http
     self.id = $route.params['id']
     if (isNaN(self.id)) {
       document.title = '编辑地址'
-      $http.post(`a/api/address/${self.id}`).then(res => {
-        let results = res.body.results
-        let area = parseArea(results.area.id)
-        results.isDefault = results.isDefault === '1'
-        _.merge(self.$data, results)
-        self.zipcode = results.zipCode
+      Address.info(self.id).then(res => {
+        let area = parseArea(res.area.id)
+        res.isDefault = res.isDefault === '1'
+        _.merge(self.$data, res)
+        self.zipcode = res.zipCode
         self.area = area
+      })
+      .catch(error => {
+        console.log(error)
       })
     } else {
       document.title = '新增地址'
@@ -62,7 +64,6 @@ export default {
   methods: {
     submit () {
       let self = this
-      let $http = this.$http
       let $router = this.$router
       let $store = this.$store
       let fields = [
@@ -101,25 +102,15 @@ export default {
         self.alert('请输入正确的邮政编码')
         return
       }
-      if (!isNaN(self.id)) {
-        $http.post(`a/api/address`, data).then(res => {
-          let response = res.body
-          self.alert(response.status.info)
-          $store.commit('address:update', {updated: true})
-          if (response.status.index === '10000') {
-            $router.go(-1)
-          }
-        })
-      } else {
-        $http.put(`a/api/address/${self.id}`, data).then(res => {
-          let response = res.body
-          self.alert(response.status.info)
-          $store.commit('address:update', {updated: true})
-          if (response.status.index === '10000') {
-            $router.go(-1)
-          }
-        })
-      }
+      Address.save(data)
+      .then(res => {
+        self.alert(res.info)
+        $store.commit('address:update', {updated: true})
+        $router.go(-1)
+      })
+      .catch(error => {
+        self.alert(error.info)
+      })
     },
     alert (message) {
       const alert = this.$vux.alert

@@ -11,7 +11,6 @@ import VueResource from 'vue-resource'
 // import CryptoJS from 'crypto-js'
 import VueScroller from 'vue-scroller'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
-import Api from './api'
 
 const storage = window.localStorage
 const parseUrl = () => {
@@ -84,7 +83,6 @@ const store = new Vuex.Store({
 })
 
 Vue.use(Navigation, {router, store})
-// Vue.use(store)
 Vue.use(AlertPlugin)
 Vue.use(ConfirmPlugin)
 Vue.use(require('vue-wechat-title'))
@@ -93,7 +91,6 @@ Vue.use(WechatPlugin)
 Vue.use(VueResource)
 Vue.use(VueScroller)
 Vue.use(VueAwesomeSwiper)
-Vue.use(Api)
 
 FastClick.attach(document.body)
 
