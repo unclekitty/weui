@@ -26,7 +26,9 @@
 
 <script>
 import _ from 'lodash'
+import Vue from 'vue'
 import { Box, Group, Cell, Icon, XInput, XButton } from 'vux'
+
 const USERTYPE = 1
 const storage = window.localStorage
 
@@ -72,6 +74,25 @@ export default {
     return {
       mobile: '',
       password: ''
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    let $http = Vue.http
+    let openId = storage.getItem('openId')
+    if (openId) {
+      $http.post('a/api/wxlogin', {openId: openId}).then(res => {
+        let response = res.body
+        let userInfo = response.results
+        if (response.status.index === '10000') {
+          storage.setItem('token', response.token)
+          storage.setItem('userInfo', JSON.stringify(userInfo))
+          next('/me')
+        } else {
+          next()
+        }
+      })
+    } else {
+      next()
     }
   }
 }

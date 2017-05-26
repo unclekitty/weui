@@ -15,31 +15,31 @@
 
     <card class="card">
       <div slot="header" class="header">
-        <span class="title">多力集团</span>
+        <span class="title">限时兑换</span>
       </div>
       <div slot="content" class="content">
         <span class="thumb">
-          <img src="../assets/bg.png">
+          <img :src="thumb">
         </span>
         <div class="body">
           <div class="title">皇帝碗</div>
           <p class="sub">
-            <span>积分300</span>
-            <x-number class="number" :value="0" :min="0"></x-number>
+            <span>积分{{price}}</span>
+            <x-number class="number" v-model="count" :min="1"></x-number>
           </p>
         </div>
       </div>
       <div slot="footer" class="footer">
         <div></div>
         <div class="align-right">
-          <p>共计1件商品 合计：<span class="warn">300积分</span></p>
-          <p>持有积分：<span class="primary">3200</span></p>
+          <p>共计1件商品 合计：<span class="warn">{{price}}积分</span></p>
+          <p>持有积分：<span class="primary">{{userInfo.dlUserAccount.integral}}</span></p>
         </div>
       </div>
     </card>
     
     <div class="footer">
-        <x-button type="warn">保存</x-button>
+        <x-button type="warn" @click.native="submit()">提交</x-button>
     </div>
   </div>
 </template>
@@ -49,6 +49,19 @@ import { mapState } from 'vuex'
 import { XNumber, XButton, Card, Group, Cell, Icon } from 'vux'
 
 export default {
+  created () {
+    const $api = this.$api
+    const $store = this.$store
+    const address = $api.address
+    address.query().then(list => {
+      for (let i = 0; i < list.length; i++) {
+        let item = list[i]
+        if (item.isDefault) {
+          $store.commit('address:selected', {data: item})
+        }
+      }
+    })
+  },
   beforeDestroy () {
     let $store = this.$store
     $store.commit('selected', {data: {}})
@@ -67,22 +80,42 @@ export default {
       let $router = this.$router
       self
       $router.push({name: 'Address', params: { select: true }})
+    },
+    submit () {
+      let self = this
+      let integral = self.userInfo.dlUserAccount.integral
+      if (integral < self.price) {
+        self.alert(`积分不足，暂时不能兑换`)
+      }
+    },
+    alert (message) {
+      const alert = this.$vux.alert
+      alert.show({
+        title: '提示',
+        content: message
+      })
     }
   },
   computed: {
     ...mapState({
-      address: state => state.address.data
+      address: state => state.address.data,
+      userInfo: state => state.user.userInfo
     })
   },
   data () {
     return {
-      title: ''
+      title: '',
+      price: 3200,
+      count: 1,
+      thumb: 'static/img_2254.png'
     }
   }
 }
 </script>
 
 <style lang="scss">
+@import '~include-media/dist/_include-media.scss';
+
 .page-ingegal-exchange{
   .address{
     .weui-cells{
@@ -185,6 +218,32 @@ export default {
           }
           .vux-number-selector-plus{
             margin: 0;
+          }
+        }
+      }
+    }
+
+    @include media("<=phone") {
+      .thumb {
+        width: 75px;
+        height: 75px;
+      }
+      .body {
+        .title {
+          font-size: 1.2em;
+        }
+
+        .sub {
+          & > span {
+            font-size: .9em;
+          }
+          .number {
+            .vux-number-selector {
+              padding: 4px 6px 2px 6px;
+            }
+            .vux-number-input {
+              width: 35px!important;
+            }
           }
         }
       }

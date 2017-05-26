@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // auth
+import Wechat from '@/components/Wechat'
 import Sigin from '@/components/Sigin'
 import Sigup from '@/components/Sigup'
 import ForgotPwd from '@/components/ForgotPwd'
 import ResetPwd from '@/components/ResetPwd'
+import Agreement from '@/components/Agreement'
 // tabs
 import Tabs from '@/components/Tabs'
 import Home from '@/components/Home'
@@ -38,7 +40,8 @@ import Address from '@/components/Address'
 import AddressEdit from '@/components/AddressEdit'
 import Settings from '@/components/Settings'
 
-const storage = window.localStorage
+// const storage = window.localStorage
+// storage.clear()
 
 Vue.use(Router)
 
@@ -47,14 +50,13 @@ export default new Router({
     {
       path: '/',
       redirect: () => {
-        storage.getItem('token')
-        return '/home'
         // let token = storage.getItem('token')
         // if (token) {
         //   return '/me'
         // } else {
-        //   return '/sigin'
+        //   return '/wechat'
         // }
+        return '/wechat'
       },
       name: 'Tabs',
       meta: {
@@ -113,6 +115,14 @@ export default new Router({
       component: Sigin
     },
     {
+      path: '/wechat',
+      name: 'Wechat',
+      meta: {
+        title: '验证'
+      },
+      component: Wechat
+    },
+    {
       path: '/Sigup',
       name: 'Sigup',
       meta: {
@@ -132,9 +142,17 @@ export default new Router({
       path: '/resetpwd',
       name: 'ResetPwd',
       meta: {
-        title: '充值密码'
+        title: '修改密码'
       },
       component: ResetPwd
+    },
+    {
+      path: '/agreement',
+      name: 'Agreement',
+      meta: {
+        title: 'Agreement'
+      },
+      component: Agreement
     },
     {
       path: '/profile',

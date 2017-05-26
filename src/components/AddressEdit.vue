@@ -1,11 +1,11 @@
 <template>
   <div class="page-address-edit">
     <group class="form">
-      <x-input title="联系人" placeholder="请输入联系人姓名" v-model="name" novalidate></x-input>
-      <x-input title="联系电话" placeholder="请输入联系人手机号" v-model="mobile" keyboard="number" is-type="china-mobile"></x-input>
-      <x-address title="所在区域" v-model="area" raw-value :list="addressData" value-text-align="left"></x-address>
-      <x-input title="详细地址" placeholder="请输入详细地址" v-model="detailed" novalidate></x-input>
-      <x-input title="邮政编码" placeholder="请输入邮政编码" v-model="zipcode" novalidate></x-input>
+      <x-input title="联系人" placeholder="请输入联系人姓名(必填)" v-model="name"></x-input>
+      <x-input title="联系电话" placeholder="请输入联系人手机号(必填)" v-model="mobile" keyboard="number" is-type="china-mobile"></x-input>
+      <x-address title="所在区域" placeholder="请选择地址(必填)" v-model="area" raw-value :list="addressData" value-text-align="left"></x-address>
+      <x-input title="详细地址" placeholder="请输入详细地址(必填)" v-model="detailed"></x-input>
+      <x-input title="邮政编码" placeholder="请输入邮政编码" v-model="zipcode" type="tel" keyboard="number" :min="6" :max="6"></x-input>
     </group>
 
     <group v-if="!isNaN(id)">
@@ -19,6 +19,7 @@
 
 <script>
 import _ from 'lodash'
+import isMobilePhone from 'validator/lib/isMobilePhone'
 import { XAddress, XInput, XButton, XSwitch, ChinaAddressV3Data, Group, Cell, Icon, Selector, Datetime } from 'vux'
 
 const parseArea = (code) => {
@@ -33,7 +34,7 @@ export default {
     let $http = this.$http
     self.id = $route.params['id']
     if (isNaN(self.id)) {
-      $route.meta.title = '编辑地址'
+      document.title = '编辑地址'
       $http.post(`a/api/address/${self.id}`).then(res => {
         let results = res.body.results
         let area = parseArea(results.area.id)
@@ -43,7 +44,7 @@ export default {
         self.area = area
       })
     } else {
-      $route.meta.title = '新增地址'
+      document.title = '新增地址'
       self.isDefault = parseInt(self.id) === 0
     }
   },
@@ -75,21 +76,48 @@ export default {
       ]
       let data = _.merge({}, _.pick(self.$data, fields))
       data.isDefault = data.isDefault ? 1 : 0
-      console.log(self.area)
       data.areaId = self.area[2]
+      if (!data.name) {
+        self.alert('请输入联系人姓名')
+        return
+      }
+      if (!data.mobile) {
+        self.alert('请输入联系电话')
+        return
+      }
+      if (!isMobilePhone(data.mobile, 'zh-CN')) {
+        self.alert('请输入正确的手机号')
+        return
+      }
+      if (!data.areaId) {
+        self.alert('请选择所在区域')
+        return
+      }
+      if (!data.detailed) {
+        self.alert('请输入详细地址')
+        return
+      }
+      if (!/^[1-9][0-9]{5}$/.test(data.zipcode)) {
+        self.alert('请输入正确的邮政编码')
+        return
+      }
       if (!isNaN(self.id)) {
         $http.post(`a/api/address`, data).then(res => {
           let response = res.body
           self.alert(response.status.info)
-          $router.go(-1)
-          $store.commit('update', {updated: true})
+          $store.commit('address:update', {updated: true})
+          if (response.status.index === '10000') {
+            $router.go(-1)
+          }
         })
       } else {
         $http.put(`a/api/address/${self.id}`, data).then(res => {
           let response = res.body
           self.alert(response.status.info)
-          $router.go(-1)
-          $store.commit('update', {updated: true})
+          $store.commit('address:update', {updated: true})
+          if (response.status.index === '10000') {
+            $router.go(-1)
+          }
         })
       }
     },

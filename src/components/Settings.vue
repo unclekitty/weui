@@ -1,6 +1,8 @@
 <template>
   <div class="page-profile">
     <group>
+      <cell title="个人信息" is-link link="profile"></cell>
+      <cell title="地址管理" is-link link="address"></cell>
       <cell title="修改密码" is-link link="resetpwd"></cell>
     </group>
 
@@ -29,10 +31,11 @@ export default {
   },
   methods: {
     sigout () {
-      const $router = this.$router
+      const wx = this.$wechat
       localStorage.clear()
       sessionStorage.clear()
-      $router.replace('/')
+      // $router.replace('/')
+      wx.closeWindow()
     },
     alert (message) {
       const alert = this.$vux.alert

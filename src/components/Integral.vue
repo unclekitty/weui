@@ -6,10 +6,10 @@
           <span class="label">我的积分：</span>
         </div>
         <div class="grid-item center">
-          <span class="label">{{integral}}</span>
+          <span class="label">{{userInfo.dlUserAccount.integral}}</span>
         </div>
         <div class="grid-item right">
-          <span class="label">积分兑换说明</span>
+          <router-link class="label" to="integralUseDescription">积分兑换说明</router-link>
         </div>
       </div>
     </div>
@@ -20,7 +20,20 @@
       </tab>
       <swiper v-model="index" :height="height" :show-dots="false">
         <swiper-item v-for="(tab, index) in tabs" :key="index">
-          <div class="tab-swiper vux-center">
+            <div class="tab-swiper vux-center">
+            <!--spinner-->
+            <div class="spinner" v-if="loading || list.length === 0">
+              <div v-if="loading">
+                <spinner type="lines"></spinner>
+                <p>正在加载...</p>
+              </div>
+              <div v-else-if="list.length === 0">
+                <icon type="info"></icon>
+                <p v-if="index===0">您还没有积分记录...</p>
+                <p v-else>您还没有{{tab}}记录...</p>
+              </div>
+            </div>
+            <!--/spinner-->
             <!--LIST-->
             <div class="list">
               <div class="item" v-for="(item, index) in list" :key="index">
@@ -39,15 +52,16 @@
 
 <script>
 import _ from 'lodash'
-import { Group, Grid, GridItem, Cell, Icon, Tab, TabItem, Swiper, SwiperItem } from 'vux'
+import { Group, Grid, GridItem, Cell, Icon, Tab, TabItem, Swiper, SwiperItem, Spinner } from 'vux'
+import { mapState } from 'vuex'
 
-const storage = window.localStorage
+// const storage = window.localStorage
 
 export default {
   created () {
     let self = this
-    let userInfo = JSON.parse(storage.getItem('userInfo'))
-    self.integral = userInfo.dlUserAccount.integral
+    // let userInfo = JSON.parse(storage.getItem('userInfo'))
+    // self.integral = userInfo.dlUserAccount.integral
     self.load()
   },
   components: {
@@ -59,17 +73,18 @@ export default {
     Tab,
     TabItem,
     Swiper,
-    SwiperItem
+    SwiperItem,
+    Spinner
   },
   methods: {
     load () {
       let self = this
       let $http = this.$http
+      let data = {}
       let fields = [
         'integralType',
         'recordType'
       ]
-      let data = {}
       _.merge(data, _.pick(self.$data, fields))
       if (data.integralType === 0) {
         delete data.integralType
@@ -83,9 +98,10 @@ export default {
         let response = res.body
         let list = response.results.list
         self.list = list
+        self.loading = false
       })
     },
-    change (index, old) {
+    onChange (index, old) {
       let self = this
       self.integralType = parseInt(index)
       if (self.integralType === 5) {
@@ -106,13 +122,16 @@ export default {
       } else {
         return '800px'
       }
-    }
+    },
+    ...mapState({
+      userInfo: state => state.user.userInfo
+    })
   },
   data () {
     return {
       title: '',
       index: 0,
-      integral: 0,
+      // integral: 0,
       tabs: {
         0: '全部',
         1: '小票积分', // 小票
@@ -133,11 +152,12 @@ export default {
       },
       list: [],
       integralType: 0,
-      recordType: 1
+      recordType: 1,
+      loading: true
     }
   },
   watch: {
-    'index': 'change'
+    'index': 'onChange'
   }
 }
 </script>
@@ -170,19 +190,9 @@ export default {
           padding: 15px 0;
           margin-top: -35px;
           font-size: 14px;
-          .help {
-            display: inline-block;
-            width: 13px;
-            height: 13px;
-            line-height: 13px;
-            font-size: 10px;
-            text-align: center;
-            border: 1px solid #fff;
-            border-radius: 50%;
+          a {
+            color: #fff;
           }
-        }
-        .label {
-          color: #fff;
         }
       }
     }
@@ -195,25 +205,20 @@ export default {
   .vux-tab-bar-inner{
     background: #E64340 !important;
   }
-
   .swiper{
     background: #fff;
     .weui-cells{
       margin: 0;
-    }
-    .vux-swiper{
-
     }
   }
   .list {
     .item{
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       padding: 15px;
       position: relative;
       color: #333;
-
       &:before {
         content: " ";
         position: absolute;
@@ -225,6 +230,16 @@ export default {
         color: #D9D9D9;
         transform-origin: 100% 0;
         transform: scaleY(0.5);
+      }
+      span {
+        flex-basis: 35%;
+        &:first-child {
+          flex: 1;
+          flex-basis: 60%;
+        }
+        &:last-child {
+          flex-basis: 15%;
+        }
       }
     }
   }

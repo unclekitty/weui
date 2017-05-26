@@ -1,81 +1,86 @@
 <template>
   <div class="page-me">
-    <div class="relative">
-      <div class="bg" style="background-image: url(static/bg.png);">
-        <div class="wrapper">
-          <div class="face">
-            <a class="link left">&nbsp;</a>
-            <router-link class="link center" to="profile">
-              <img src="static/head.jpeg">
-            </router-link>
-            <a class="link right">&nbsp;</a>
-          </div>
-          <h3 class="name">
-            <router-link class="link" to="profile">{{userInfo.nickName}}</router-link>
-          </h3>
-          <div class="grid-wrapper">
-            <grid slot="content" :rows="2">
-              <grid-item class="grid-item" link="integral">
-                <span class="title">我的积分</span>
-                <span>{{userInfo.dlUserAccount.integral}}</span>
-              </grid-item>
-              <grid-item class="grid-item" link="message">
-                <span class="title">我的消息</span>
-                <span>{{userInfo.msgCount}}</span>
-              </grid-item>
-            </grid>
-          </div>
-        </div>
+    <scroller>
+      <div class="content">
+	    <div class="relative">
+	      <div class="bg" style="background-image: url(static/bg.jpg);">
+	        <div class="wrapper">
+	          <div class="face">
+	            <a class="link left">&nbsp;</a>
+	            <router-link class="link center" to="profile">
+	              <img :src="userInfo.headimgurl">
+	            </router-link>
+		    <router-link class="link right" to="settings">
+		      <i class="glyph-icon flaticon-settings-5"></i>
+	            </router-link>
+	          </div>
+	          <h3 class="name">
+	            <router-link class="link" to="profile">{{userInfo.nickName}}</router-link>
+	          </h3>
+	          <div class="grid-wrapper">
+	            <grid slot="content" :rows="2">
+	              <grid-item class="grid-item" link="integral">
+	                <span class="title">我的积分</span>
+	                <span>{{userInfo.dlUserAccount.integral}}</span>
+	              </grid-item>
+	              <grid-item class="grid-item" link="message">
+	                <span class="title">我的消息</span>
+	                <span>{{userInfo.msgCount}}</span>
+	              </grid-item>
+	            </grid>
+	          </div>
+	        </div>
+	      </div>
+	      <!---->
+	      <div class="panel">
+	        <grid slot="content" :rows="3">
+	          <grid-item class="grid-item" link="ticket">
+	            <i class="glyph-icon flaticon-photo-camera"></i>
+	            <span class="label">拍摄小票</span>
+	          </grid-item>
+	          <grid-item class="grid-item" :class="{'no-sign': !userInfo.isSign}" @click.native="sign()">
+	            <i class="glyph-icon flaticon-calendar-7"></i>
+	            <span class="label" v-if="userInfo.isSign">已签到</span>
+	            <span class="label" v-else>签到</span>
+	          </grid-item>
+	          <grid-item class="grid-item" link="ecticket">
+	            <i class="glyph-icon flaticon-bookmark"></i>
+	            <span class="label">电商积分</span>
+	          </grid-item>
+	        </grid>
+	      </div>
+	    </div>
+	    <!--integral-->
+	    <div class="integral">
+	      <grid slot="content" :rows="3">
+	        <grid-item class="grid-item" link="ticketlist">
+	          <i class="glyph-icon flaticon-calendar-2 blue"></i>
+	          <span class="label">小票上传记录</span>
+	        </grid-item>
+	        <grid-item class="grid-item" link="ecticketlist">
+	          <i class="glyph-icon flaticon-file-1 danger"></i>
+	          <span class="label">电商上传记录</span>
+	        </grid-item>
+	        <grid-item class="grid-item" link="order">
+	          <i class="glyph-icon flaticon-gift warn"></i>
+	          <span class="label">我的订单</span>
+	        </grid-item>
+	        <grid-item class="grid-item" link="address">
+	          <i class="glyph-icon flaticon-list warn"></i>
+	          <span class="label">地址管理</span>
+	        </grid-item>
+	        <grid-item class="grid-item" link="integralRule">
+	          <i class="glyph-icon flaticon-notepad primary"></i>
+	          <span class="label">积分规则</span>
+	        </grid-item>
+	        <grid-item class="grid-item" link="settings">
+	          <i class="glyph-icon flaticon-settings-5"></i>
+	          <span class="label">设置</span>
+	        </grid-item>
+	      </grid>
+	    </div>
       </div>
-      <!---->
-      <div class="panel">
-        <grid slot="content" :rows="3">
-          <grid-item class="grid-item" link="ticket">
-            <i class="glyph-icon flaticon-photo-camera"></i>
-            <span class="label">拍摄小票</span>
-          </grid-item>
-          <grid-item class="grid-item" :class="{'no-sign': !userInfo.isSign}" @click.native="sign()">
-            <i class="glyph-icon flaticon-calendar-7"></i>
-            <span class="label" v-if="userInfo.isSign">已签到</span>
-            <span class="label" v-else>签到</span>
-          </grid-item>
-          <grid-item class="grid-item" link="ecticket">
-            <i class="glyph-icon flaticon-bookmark"></i>
-            <span class="label">电商积分</span>
-          </grid-item>
-        </grid>
-      </div>
-    </div>
-    <!--integral-->
-    <div class="integral">
-      <grid slot="content" :rows="3">
-        <grid-item class="grid-item" link="ticketlist">
-          <i class="glyph-icon flaticon-calendar-2 blue"></i>
-          <span class="label">小票上传记录</span>
-        </grid-item>
-        <grid-item class="grid-item" link="ecticketlist">
-          <i class="glyph-icon flaticon-file-1 danger"></i>
-          <span class="label">电商上传记录</span>
-        </grid-item>
-        <grid-item class="grid-item" link="order">
-          <i class="glyph-icon flaticon-gift warn"></i>
-          <span class="label">我的订单</span>
-        </grid-item>
-        <grid-item class="grid-item" link="address">
-          <i class="glyph-icon flaticon-list warn"></i>
-          <span class="label">地址管理</span>
-        </grid-item>
-        <grid-item class="grid-item" link="integralRule">
-          <i class="glyph-icon flaticon-notepad primary"></i>
-          <span class="label">积分规则</span>
-        </grid-item>
-        <grid-item class="grid-item" link="settings">
-          <i class="glyph-icon flaticon-settings-5"></i>
-          <span class="label">设置</span>
-        </grid-item>
-      </grid>
-    </div>
-
+    </scroller>
   </div>
 </template>
 
@@ -102,6 +107,7 @@ export default {
     loadInfo () {
       let self = this
       let $http = this.$http
+      let $store = this.$store
       let userInfo = JSON.parse(storage.getItem('userInfo'))
       $http.post(`a/api/user/${userInfo.id}`, {}).then(res => {
         let response = res.body
@@ -112,20 +118,22 @@ export default {
           'sex',
           'birthday',
           'mobile',
-          'email'
+          'email',
+          'headimgurl'
         ]
         _.merge(self.userInfo, info)
         _.merge(self.userInfo, _.pick(info.dlUserInfo, fields))
+        if (!self.userInfo.headimgurl) {
+          self.userInfo.headimgurl = 'static/head.jpeg'
+        }
+        $store.commit('user:update', {userInfo: self.userInfo, updated: false})
         storage.setItem('userInfo', JSON.stringify(self.userInfo))
       })
     },
     onUpdate (val, old) {
       let self = this
-      let $store = this.$store
-      console.log(val)
       if (val) {
         self.loadInfo()
-        $store.commit('user:update', {updated: false})
       }
     },
     sign () {
@@ -154,10 +162,6 @@ export default {
   },
   data () {
     return {
-      // note: changing this line won't causes changes
-      // with hot-reload because the reloaded component
-      // preserves its current state and we are modifying
-      // its initial state.
       bg: {
         backgroundImage: `url(static/bg.png);`
       },
@@ -170,8 +174,9 @@ export default {
         birthday: '',
         mobile: '',
         email: '',
-        isSign: false,
+        isSign: true,
         msgCount: 0,
+        headimgurl: 'static/head.jpeg',
         dlUserAccount: {}
       }
     }
@@ -183,86 +188,99 @@ export default {
 </script>
 
 <style lang="scss">
+@import '~include-media/dist/_include-media.scss';
+$breakpoints: (phone: 320px, tablet: 768px, desktop: 1024px);
+
 .page-me {
+  .content {
+    overflow: hidden
+  }
+  
   .relative{
     position: relative;
-  }
-  .bg{
-    height: 260px;
-  }
-  .wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 15px;
+    .bg{
+      height: 260px;
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
 
-    .face {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      color: #fff;
-      font-size: 18px;
-      margin-bottom: 10px;
+        .face {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          color: #333;
+          font-size: 18px;
+          margin-bottom: 10px;
 
-      .link{
-        flex: 1;
-        display: block;
-        &.center {
-          text-align: center;
-        }
-        &.right {
-          text-align: right;
-          font-size: 28px;
-          color: #fff;
-        }
-        img {
-          width: 60px;
-          height: 60px;
-          vertical-align: middle;
-          border-radius: 50%;
-          border: 2px solid rgba(236, 236, 236, 0.25);
-        }
-      }
-    }
-
-    .name{
-      &, & a{
-        color: #fff;
-      }
-    }
-
-    .grid-wrapper{
-      .weui-grids{
-        &:before, &:after{
-          display: none;
-        }
-        .grid-item{
-          &:before, &:after{
-            display: none;
-          }
-          &:nth-child(1){
-            &:before{
-              display: block;
-              top: 30px;
-              bottom: 30px;
-              border-color: #fff;
-              transform: scaleX(1);
+          .link{
+            flex: 1;
+            display: block;
+            &.center {
+              text-align: center;
+            }
+            &.right {
+              text-align: right;
+              font-size: 28px;
+              color: #fff;
+            }
+            img {
+              width: 60px;
+              height: 60px;
+              vertical-align: middle;
+              border-radius: 50%;
+              border: 2px solid rgba(236, 236, 236, 0.25);
             }
           }
-          &:hover{
-            background:none;
-          }
-          .title{
-            color: #fff;
-          }
-          span {
-            color: #ff9800;
+        }
+
+        .name{
+          &, & a{
+            color: #333;
           }
         }
+
+        .grid-wrapper{
+          .weui-grids{
+            &:before, &:after{
+              display: none;
+            }
+            .grid-item{
+              &:before, &:after{
+                display: none;
+              }
+              &:nth-child(1){
+                &:before{
+                  display: block;
+                  top: 30px;
+                  bottom: 30px;
+                  border-color: #333;
+                  transform: scaleX(1);
+                }
+              }
+              &:hover{
+                background:none;
+              }
+              .title{
+                color: #333;
+              }
+              span {
+                color: #d72800;
+              }
+            }
+          }
+          width: 100%;
+        }
       }
-      width: 100%;
+    }
+
+    @include media("<=phone") {
+      .bg {
+        height: 230px;
+      }
     }
   }
 
@@ -278,6 +296,14 @@ export default {
     }
     span {
       font-size: 1.3em;
+    }
+    @include media("<=phone") {
+      .title {
+        font-size: 1em;
+      }
+      span {
+        font-size: 1em;
+      }
     }
   }
 
@@ -328,6 +354,21 @@ export default {
           }
         }
       }
+
+      @include media("<=phone") {
+        bottom: -45px;
+
+        .weui-grids{
+          .grid-item{
+            .glyph-icon {
+              font-size: 28px;
+            }
+            span {
+              font-size: 1em;
+            }
+          }
+        }
+      }
     }
 
     &.integral{
@@ -342,6 +383,17 @@ export default {
         }
         .glyph-icon {
           font-size: 40px;
+        }
+      }
+      
+      @include media("<=phone") {
+        margin-top: 80px;
+        .grid-item {
+          padding: 15px 10px;
+
+          .glyph-icon {
+            font-size: 32px;
+          }
         }
       }
     }

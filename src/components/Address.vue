@@ -1,38 +1,55 @@
 <template>
   <div class="page-address">
-    <card class="card" v-for="item in list" :key="item.id" @click.native="select(item)">
-        <div slot="header" class="header">
-            <div class="row">
-                <span class="title">{{item.name}} {{item.mobile}}</span>
+    <div class="content">
+      <scroller>
+        <div class="scroller-inner">
+          <!--spinner-->
+          <div class="spinner" v-if="loading || list.length === 0">
+            <div v-if="loading">
+              <spinner type="lines"></spinner>
+              <p>正在加载...</p>
             </div>
-            <div class="row">
-                <span class="title">{{item.detailed}}</span>
+            <div v-else-if="list.length === 0">
+              <icon type="info"></icon>
+              <p>您还没有添加地址...</p>
             </div>
+          </div>
+          <!--/spinner-->
+          <card class="card" v-for="item in list" :key="item.id" @click.native="select(item)">
+              <div slot="header" class="header">
+                  <div class="row">
+                      <span class="title">{{item.name}} {{item.mobile}}</span>
+                  </div>
+                  <div class="row">
+                      <span class="title">{{item.detailed}}</span>
+                  </div>
+              </div>
+              <div slot="footer" class="footer">
+                  <div class="weui-cells weui-cells_checkbox">
+                      <label class="weui-cell weui-check__label" @click="setDefault(item, $event)">
+                          <div class="weui-cell__hd">
+                              <input type="checkbox" class="weui-check" name="isdefault" v-model="item.isDefault"/>
+                              <i class="weui-icon-checked"></i>
+                          </div>
+                          <div class="weui-cell__bd">
+                              <p>默认地址</p>
+                          </div>
+                      </label>
+                  </div>
+                  <!--<x-number :value="0" :min="0"></x-number>-->
+                  <div class="align-right">
+                      <x-button mini type="warn" @click.native.stop="dele(item.id)">
+                          <x-icon type="ios-trash" size="18"></x-icon>删除
+                      </x-button>
+                      <x-button mini type="primary" @click.native.stop="editor(item.id)">
+                          <x-icon type="ios-compose" size="18"></x-icon>编辑
+                      </x-button>
+                  </div>
+              </div>
+          </card>
         </div>
-        <div slot="footer" class="footer">
-            <div class="weui-cells weui-cells_checkbox">
-                <label class="weui-cell weui-check__label" @click="setDefault(item, $event)">
-                    <div class="weui-cell__hd">
-                        <input type="checkbox" class="weui-check" name="isdefault" v-model="item.isDefault"/>
-                        <i class="weui-icon-checked"></i>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <p>默认地址</p>
-                    </div>
-                </label>
-            </div>
-            <!--<x-number :value="0" :min="0"></x-number>-->
-            <div class="align-right">
-                <x-button mini type="warn" @click.native.stop="dele(item.id)">
-                    <x-icon type="ios-trash" size="18"></x-icon>删除
-                </x-button>
-                <x-button mini type="primary" @click.native.stop="editor(item.id)">
-                    <x-icon type="ios-compose" size="18"></x-icon>编辑
-                </x-button>
-            </div>
-        </div>
-    </card>
-
+      </scroller>
+    </div>
     <footer>
         <x-button type="warn" @click.native="editor(0)">添加新地址</x-button>
     </footer>
@@ -41,7 +58,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { XButton, Checklist, Box, Card, Group, Cell, Icon } from 'vux'
+import { XButton, Checklist, Box, Card, Group, Cell, Icon, Spinner } from 'vux'
 
 export default {
   created () {
@@ -60,19 +77,17 @@ export default {
     Card,
     Group,
     Cell,
-    Icon
+    Icon,
+    Spinner
   },
   methods: {
     load () {
       let self = this
-      let $http = this.$http
-      $http.post(`a/api/address/list`, {}).then(res => {
-        let response = res.body
-        let list = response.results.list
-        for (let i = 0; i < list.length; i++) {
-          list[i].isDefault = list[i].isDefault === '1'
-        }
+      const $api = this.$api
+      const address = $api.address
+      address.query().then(list => {
         self.list = list
+        self.loading = false
       })
     },
     onUpdate (val, old) {
@@ -81,7 +96,7 @@ export default {
       console.log(val)
       if (val) {
         self.load()
-        $store.commit('update', {updated: false})
+        $store.commit('address:update', {updated: false})
       }
     },
     editor (id) {
@@ -90,7 +105,11 @@ export default {
       if (id) {
         $router.push(`address/${id}`)
       } else {
-        $router.push(`address/${self.list.length || 0}`)
+        if (self.list.length < 5) {
+          $router.push(`address/${self.list.length || 0}`)
+        } else {
+          self.alert('最多支持维护5个地址')
+        }
       }
     },
     dele (id) {
@@ -120,7 +139,7 @@ export default {
       let self = this
       let $router = this.$router
       let $store = this.$store
-      $store.commit('selected', {data: item})
+      $store.commit('address:selected', {data: item})
       if (self.isSelect) {
         $router.go(-1)
       }
@@ -155,7 +174,8 @@ export default {
     return {
       title: '',
       list: [],
-      isSelect: false
+      isSelect: false,
+      loading: true
     }
   },
   watch: {
@@ -166,7 +186,19 @@ export default {
 
 <style lang="scss">
 .page-address{
-
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto!important;
+  bottom: 44px;
+  .content {
+    position: relative;
+    height: 100%;
+  }
+  .scroller-inner {
+    overflow: hidden;
+  }
   .card{
     margin-top: 15px;
     box-shadow: 2px 2px 1px rgba(204, 204, 204, 0.51);
@@ -174,7 +206,10 @@ export default {
     &:before,&:after{
       display: none;
     }
-
+    &:last-child {
+      margin-bottom: 15px;
+    }
+    
     .header{
         padding: 10px 0;
         .row{

@@ -1,7 +1,19 @@
 <template>
   <div class="page-ingegal-exchange-record">
-    <group class="list">
-      <template v-for="(item, index) in list2">
+    <!--spinner-->
+    <div class="spinner" v-if="loading || list.length === 0">
+      <div v-if="loading">
+        <spinner type="lines"></spinner>
+        <p>正在加载...</p>
+      </div>
+      <div v-else-if="list.length === 0">
+        <icon type="info"></icon>
+        <p>您还没有兑换过礼品...</p>
+      </div>
+    </div>
+    <!--/spinner-->
+    <group class="list" v-if="list.length">
+      <template v-for="(item, index) in list">
         <div class="head">
           <span class="date">2017-5-5 8:00</span>
           <span class="warn">-200</span>
@@ -13,20 +25,29 @@
 </template>
 
 <script>
-import { Group, Cell, Icon } from 'vux'
+import { Group, Cell, Icon, Spinner } from 'vux'
 
 const list = () => ['全部', '实体店积分', '签到积分', '积分兑换']
 
 export default {
+  created () {
+    let self = this
+    setTimeout(() => {
+      self.list = list
+      self.loading = false
+    }, 1000)
+  },
   components: {
     Group,
     Cell,
-    Icon
+    Icon,
+    Spinner
   },
   data () {
     return {
       title: '',
-      list2: list()
+      list: [],
+      loading: true
     }
   }
 }
