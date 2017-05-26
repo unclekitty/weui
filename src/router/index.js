@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // auth
+import Wechat from '@/components/Wechat'
 import Sigin from '@/components/Sigin'
 import Sigup from '@/components/Sigup'
 import ForgotPwd from '@/components/ForgotPwd'
 import ResetPwd from '@/components/ResetPwd'
+import Agreement from '@/components/Agreement'
 // tabs
 import Tabs from '@/components/Tabs'
 // import Home from '@/components/Home'
@@ -18,6 +20,7 @@ import IntegralRule from '@/components/IntegralRule'
 import IntegalExchange from '@/components/IntegalExchange'
 import IntegalExchangeRecord from '@/components/IntegalExchangeRecord'
 import IntegalExchangeDetail from '@/components/IntegalExchangeDetail'
+import IntegralUseDescription from '@/components/IntegralUseDescription'
 import Message from '@/components/Message'
 import Ticket from '@/components/Ticket'
 import TicketList from '@/components/TicketList'
@@ -25,7 +28,7 @@ import Address from '@/components/Address'
 import AddressEdit from '@/components/AddressEdit'
 import Settings from '@/components/Settings'
 
-const storage = window.localStorage
+// const storage = window.localStorage
 // storage.clear()
 
 Vue.use(Router)
@@ -35,12 +38,13 @@ export default new Router({
     {
       path: '/',
       redirect: () => {
-        let token = storage.getItem('token')
-        if (token) {
-          return '/me'
-        } else {
-          return '/sigin'
-        }
+        // let token = storage.getItem('token')
+        // if (token) {
+        //   return '/me'
+        // } else {
+        //   return '/wechat'
+        // }
+        return '/wechat'
       },
       name: 'Tabs',
       meta: {
@@ -91,6 +95,14 @@ export default new Router({
       component: Sigin
     },
     {
+      path: '/wechat',
+      name: 'Wechat',
+      meta: {
+        title: '验证'
+      },
+      component: Wechat
+    },
+    {
       path: '/Sigup',
       name: 'Sigup',
       meta: {
@@ -110,9 +122,17 @@ export default new Router({
       path: '/resetpwd',
       name: 'ResetPwd',
       meta: {
-        title: '充值密码'
+        title: '修改密码'
       },
       component: ResetPwd
+    },
+    {
+      path: '/agreement',
+      name: 'Agreement',
+      meta: {
+        title: 'Agreement'
+      },
+      component: Agreement
     },
     {
       path: '/profile',
@@ -161,6 +181,14 @@ export default new Router({
         title: '兑换详情'
       },
       component: IntegalExchangeDetail
+    },
+    {
+      path: '/integralUseDescription',
+      name: 'IntegralUseDescription',
+      meta: {
+        title: '积分规则'
+      },
+      component: IntegralUseDescription
     },
     {
       path: '/message',

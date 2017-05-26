@@ -2,6 +2,18 @@
   <div class="page-ticket-list">
     <scroller>
       <div class="wrapper">
+        <!--spinner-->
+        <div class="spinner" v-if="loading || list.length === 0">
+          <div v-if="loading">
+            <spinner type="lines"></spinner>
+            <p>正在加载...</p>
+          </div>
+          <div v-else-if="list.length === 0">
+            <icon type="info"></icon>
+            <p>您还没有上传小票...</p>
+          </div>
+        </div>
+        <!--/spinner-->
         <card class="card" v-for="item in list" :key="item.id">
           <div slot="header" class="header">
             <span class="title">{{item.createDate}}</span>
@@ -9,7 +21,8 @@
           </div>
           <div slot="content" class="content">
             <span class="thumb">
-              <img :src="item.imgurl">
+              <badge v-if="item.images.length" :text="item.images.length"></badge>
+              <img :src="item.images[0].imgurl">
             </span>
             <div class="body">
               <div class="title">消费金额：{{item.amount}}元</div>
@@ -25,7 +38,7 @@
 </template>
 
 <script>
-import { Box, Card, Group, Cell, Icon } from 'vux'
+import { Box, Card, Group, Cell, Icon, Spinner, Badge } from 'vux'
 import moment from 'moment'
 
 export default {
@@ -38,7 +51,9 @@ export default {
     Card,
     Group,
     Cell,
-    Icon
+    Icon,
+    Spinner,
+    Badge
   },
   methods: {
     load () {
@@ -49,8 +64,15 @@ export default {
         let list = response.results.list
         for (let i = 0; i < list.length; i++) {
           list[i].createDate = moment(list[i].createDate).format('YYYY-MM-DD HH:mm')
+          list[i].images = []
+          if (list[i].billFileList && list[i].billFileList.length) {
+            list[i].images = list[i].billFileList
+          } else {
+            list[i].images.push({imgurl: list[i].imgurl})
+          }
         }
         self.list = list
+        self.loading = false
       })
     }
   },
@@ -62,7 +84,8 @@ export default {
         1: '审核通过',
         2: '审核中',
         3: '审核失败'
-      }
+      },
+      loading: true
     }
   }
 }
@@ -116,9 +139,16 @@ export default {
         height: 56px;
         margin-right: 15px;
         flex-shrink: 0;
+        position: relative;
         img{
           width: 100%;
           height: 100%;
+        }
+        .vux-badge {
+          position: absolute;
+          background: rgba(0, 0, 0, 0.6);
+          right: -4px;
+          top: -4px;
         }
       }
       .body{

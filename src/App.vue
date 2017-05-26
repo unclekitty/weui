@@ -86,11 +86,19 @@ export default {
   .form{
       .weui-cells{
           margin: 0;
-          .vux-x-input{
+          .weui-cell{
             .weui-cell__hd{
               width: 30%;
             }
           }
       }
+  }
+  .spinner {
+    text-align: center;
+    padding: 40px 0;
+    p {
+      color: #666;
+      margin-top: 10px;
+    }
   }
 </style>

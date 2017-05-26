@@ -3,15 +3,15 @@
     <div class="wrapper">
       <group class="header">
         <cell title="头像" value-align="right">
-          <img slot="icon" :src="header">
+          <img slot="icon" :src="userInfo.headimgurl">
         </cell>
       </group>
       <group class="form">
-        <x-input title="昵称" placeholder="请输入昵称" v-model="userInfo.nickName" novalidate></x-input>
-        <x-input title="真实姓名" placeholder="情输入真实姓名" v-model="userInfo.name" novalidate></x-input>
+        <x-input title="昵称" placeholder="请输入昵称" v-model="userInfo.nickName" disabled novalidate></x-input>
+        <x-input title="真实姓名" placeholder="请输入真实姓名" v-model="userInfo.name" novalidate></x-input>
         <selector title="性别" :options="sex" v-model="userInfo.sex"></selector>
         <datetime title="生日" v-model="userInfo.birthday" :min-year="1970" :start-date="startDate" :end-date="endDate" confirm-text="确认" cancel-text="取消"></datetime>
-        <x-input title="手机号" placeholder="情输入手机号" v-model="userInfo.mobile" keyboard="number" is-type="china-mobile"></x-input>
+        <x-input title="手机号" placeholder="请输入手机号" v-model="userInfo.mobile" keyboard="number" is-type="china-mobile"></x-input>
         <x-input title="电子邮箱" placeholder="请输入邮箱" v-model="userInfo.email" novalidate></x-input>
       </group>
     </div>
@@ -42,11 +42,15 @@ export default {
         'sex',
         'birthday',
         'mobile',
-        'email'
+        'email',
+        'headimgurl'
       ]
       _.merge(self.userInfo, info)
       info.dlUserInfo.birthday = moment(info.dlUserInfo.birthday).format('YYYY-MM-DD')
       _.merge(self.userInfo, _.pick(info.dlUserInfo, fields))
+      if (!self.userInfo.headimgurl) {
+        self.userInfo.headimgurl = 'static/head.jpeg'
+      }
     })
   },
   components: {
@@ -98,14 +102,15 @@ export default {
       header: 'static/head.jpeg',
       startDate: moment(0).format('YYYY-MM-DD'),
       endDate: moment().format('YYYY-MM-DD'),
-      sex: [{key: '1', value: '男'}, {key: '0', value: '女'}],
+      sex: [{key: '1', value: '男'}, {key: '2', value: '女'}],
       userInfo: {
         nickName: '',
         name: '',
         sex: '',
-        birthday: '',
+        birthday: moment().format('YYYY-MM-DD'),
         mobile: '',
-        email: ''
+        email: '',
+        headimgurl: 'static/head.jpeg'
       }
     }
   }
@@ -118,6 +123,7 @@ export default {
     overflow: hidden;
     padding-bottom: 44px;
   }
+  
   .header{
     .weui-cells{
       margin: 0;
@@ -132,6 +138,26 @@ export default {
       }
     }
   }
+
+  .form {
+    margin-top: -1px;
+    .vux-datetime {
+      div {
+        &:first-child{
+          width: 30%;
+        }
+      }
+      .vux-datetime-value {
+        text-align: left;
+      }
+    }
+    .vux-selector {
+      .weui-cell__bd {
+        margin-left: -4px;
+      }
+    }
+  }
+
   .footer{
     position: fixed;
     left: 0;

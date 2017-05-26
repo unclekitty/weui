@@ -10,8 +10,22 @@ import Navigation from 'vue-navigation'
 import VueResource from 'vue-resource'
 // import CryptoJS from 'crypto-js'
 import VueScroller from 'vue-scroller'
+import Api from './api'
 
 const storage = window.localStorage
+const parseUrl = () => {
+  let obj = {}
+  location.search.replace(/[`?`&]([^=#]+)=([^&#]*)/g, ($1, $2, $3) => {
+    obj[$2] = obj[$2] ? obj[$2] + ',' + $3 : $3
+  })
+  return obj
+}
+
+const openId = parseUrl().openId
+
+if (openId) {
+  storage.setItem('openId', parseUrl().openId)
+}
 
 Vue.use(Vuex)
 // store
@@ -35,22 +49,32 @@ const store = new Vuex.Store({
         updated: false
       },
       mutations: {
-        selected (state, payload) {
+        'address:selected' (state, payload) {
           state.data = payload.data
         },
-        update (state, payload) {
+        'address:update' (state, payload) {
           state.updated = payload.updated
         }
       }
     },
     user: {
       state: {
-        info: {},
+        userInfo: {
+          nickName: '',
+          name: '',
+          sex: '',
+          birthday: '',
+          mobile: '',
+          email: '',
+          isSign: false,
+          msgCount: 0,
+          dlUserAccount: {}
+        },
         updated: false
       },
       mutations: {
         'user:update' (state, payload) {
-          state.info = payload.info
+          state.userInfo = payload.userInfo
           state.updated = payload.updated
         }
       }
@@ -67,6 +91,7 @@ Vue.use(LoadingPlugin)
 Vue.use(WechatPlugin)
 Vue.use(VueResource)
 Vue.use(VueScroller)
+Vue.use(Api)
 
 FastClick.attach(document.body)
 
@@ -75,14 +100,17 @@ Vue.http.options.root = 'http://duo.authorc.com/duoli'
 // Vue.http.options.root = 'http://10.21.32.8:8080/duoli'
 Vue.http.headers.common['name'] = 'duoli'
 Vue.http.interceptors.push((request, next) => {
+  const openId = storage.getItem('openId') || ''
   const token = storage.getItem('token') || ''
   const userInfo = JSON.parse(storage.getItem('userInfo'))
   const $router = Vue.router
   if (request.body) {
+    request.body['openId'] = openId
     request.body['userId'] = userInfo ? userInfo.id : ''
     request.body['token'] = token
   } else {
     request.body = {
+      openId: openId,
       token: token,
       userId: userInfo ? userInfo.id : ''
     }
@@ -103,7 +131,7 @@ http.post('a/weixin/api/getAuth', {url: `${location.origin}${location.pathname}$
   console.log(res)
   let results = res.body.results
   wx.config({
-    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
     appId: results.appId, // 必填，公众号的唯一标识
     timestamp: results.timestamp, // 必填，生成签名的时间戳
     nonceStr: results.nonceStr, // 必填，生成签名的随机串
