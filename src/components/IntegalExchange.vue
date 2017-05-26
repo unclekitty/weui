@@ -1,7 +1,7 @@
 <template>
   <div class="page-ingegal-exchange">
     <group class="address">
-      <cell title="选择收获地址" is-link @click.native="select()"></cell>
+      <cell title="选择收货地址" is-link @click.native="select()"></cell>
       <div class="address-info">
         <div class="row">
           <span>收件人：{{address.name}}</span>

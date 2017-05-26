@@ -10,6 +10,7 @@ import Navigation from 'vue-navigation'
 import VueResource from 'vue-resource'
 // import CryptoJS from 'crypto-js'
 import VueScroller from 'vue-scroller'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
 import Api from './api'
 
 const storage = window.localStorage
@@ -91,12 +92,13 @@ Vue.use(LoadingPlugin)
 Vue.use(WechatPlugin)
 Vue.use(VueResource)
 Vue.use(VueScroller)
+Vue.use(VueAwesomeSwiper)
 Vue.use(Api)
 
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false
-Vue.http.options.root = 'http://duo.authorc.com/duoli'
+Vue.http.options.root = 'http://duoli.authorc.com'
 // Vue.http.options.root = 'http://10.21.32.8:8080/duoli'
 Vue.http.headers.common['name'] = 'duoli'
 Vue.http.interceptors.push((request, next) => {

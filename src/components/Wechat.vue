@@ -21,12 +21,13 @@
         <x-input title="密码" type="password" placeholder="请输入密码" v-model="password" :min="6" :max="16"></x-input>
       </group>
       <div class="wp">
-        <span>
-          继续操作视为同意<router-link class="link" to="agreement">《用户注册协议》</router-link>
-        </span>
+        <span></span>
         <span>
           <router-link to="forgotpwd">忘记密码</router-link>
         </span>
+      </div>
+      <div class="center">
+        继续操作视为同意<router-link class="link" to="agreement">《用户注册协议》</router-link>
       </div>
       <div class="form-group">
         <x-button type="warn" @click.native="sigin()">立即验证</x-button>
@@ -219,7 +220,7 @@ export default {
   }
 
  .wp{
-    padding: 15px 0;
+    padding: 10px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -227,7 +228,14 @@ export default {
     &, & a{
       color:#999;
     }
-
+    .link{
+      color: #E64340;
+    }
+  }
+  .center {
+    padding: 0 0 10px 0;
+    text-align: center;
+    font-size: .8em;
     .link{
       color: #E64340;
     }
